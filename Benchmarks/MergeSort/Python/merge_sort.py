@@ -96,10 +96,10 @@ def merge_blocks(files: list[str], out: str, block_size: str) -> None:
 
             for i in range(len(blocks)):
                 blockValue = blocks[i].next()
-                if blockValue == None:
+                if blockValue is None:
                     continue
 
-                if value == None or blockValue < value:
+                if value is None or blockValue < value:
                     block = i
                     value = blockValue
 

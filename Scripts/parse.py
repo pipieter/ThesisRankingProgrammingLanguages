@@ -52,7 +52,8 @@ def get_resources_data(resources_file_path: str) -> ResourceData:
             data = json.loads(line)
             runtime = data["total_runtime_ms"] / 1000  # In seconds
             memory = sum(
-                [mem["memory"] * mem["runtime_ms"] / 1000 for mem in data["samples"]]
+                [mem["memory"] * mem["runtime_ms"] /
+                    1000 for mem in data["samples"]]
             )
             avg_memory = memory / runtime
 
@@ -75,7 +76,8 @@ def parse():
     files = [file for file in files if file.endswith(".json")]
 
     energy_files = [file for file in files if file.endswith(".energy.json")]
-    resources_files = [file for file in files if file.endswith(".resources.json")]
+    resources_files = [
+        file for file in files if file.endswith(".resources.json")]
 
     for energy_file in energy_files:
         benchmark, language, identifier, _, _ = energy_file.split(".")
@@ -89,7 +91,9 @@ def parse():
         benchmark, language, identifier, _, _ = resources_file.split(".")
         file_path = os.path.join(path, resources_file)
         resources = get_resources_data(file_path)
-        print(f"{benchmark};{language};{identifier};{resources.runtime:.4f};{resources.avg_memory:.4f}")
+        print(
+            f"{benchmark};{language};{identifier};{resources.runtime:.4f};{resources.avg_memory:.4f}"
+        )
 
 
 if __name__ == "__main__":

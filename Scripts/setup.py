@@ -25,7 +25,8 @@ def generate_input_files(verbose: bool) -> None:
     for vertices in page_rank_vertices:
         if verbose:
             print(f"Generating PageRank file with {vertices} vertices.")
-        PageRank.generate_input_file(f"Data/PageRank/{vertices}", vertices, 0.2)
+        PageRank.generate_input_file(
+            f"Data/PageRank/{vertices}", vertices, 0.2)
 
 
 def setup(verbose: bool) -> None:

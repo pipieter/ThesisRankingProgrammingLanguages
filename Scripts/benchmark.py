@@ -12,7 +12,8 @@ def clear_caches(level: int = 3):
 
 
 def get_process_information(pid: int) -> dict | None:
-    result = subprocess.run(["ps", "-p", str(pid), "-o", "rss"], capture_output=True)
+    result = subprocess.run(
+        ["ps", "-p", str(pid), "-o", "rss"], capture_output=True)
     if result.returncode != 0:
         return None
     memory = int(result.stdout.decode("utf-8").split("\n")[1])
@@ -35,8 +36,8 @@ def run_benchmark(
     clear_cache: bool = False,
 ) -> None:
     # Copy PATH and HOME variables, this has to be done manually
-    args["PATH"] = os.environ["PATH"] 
-    args["HOME"] = os.environ["HOME"] 
+    args["PATH"] = os.environ["PATH"]
+    args["HOME"] = os.environ["HOME"]
 
     cwd = os.path.join(ROOT, "Benchmarks", benchmark, language)
 
@@ -46,7 +47,6 @@ def run_benchmark(
     if verbose:
         stdout = subprocess.PIPE
         stderr = subprocess.STDOUT
-
 
     # Compile the program
     compilation = subprocess.run(
@@ -126,7 +126,8 @@ def run_benchmark(
                 sample = get_process_information(process.pid)
 
                 timestamp = time.time()
-                sample["runtime_ms"] = round((timestamp - last_measurement) * 1000)
+                sample["runtime_ms"] = round(
+                    (timestamp - last_measurement) * 1000)
                 last_measurement = timestamp
 
                 process_data["samples"].append(sample)

@@ -13,13 +13,14 @@ def run(command: str) -> None:
         peak_memory = 0
         start = time.time()
 
-        process = subprocess.Popen(command, stdout=None, stderr=None, shell=False)
-        while process.poll() == None:
+        process = subprocess.Popen(
+            command, stdout=None, stderr=None, shell=False)
+        while process.poll() is None:
             try:
                 info = psutil.Process(process.pid)
                 memory = info.memory_info()[0]
                 peak_memory = max(peak_memory, memory)
-            except:
+            except BaseException:
                 ...
             time.sleep(0.001)
         end = time.time()
@@ -38,7 +39,7 @@ def run(command: str) -> None:
     try:
         mean_time = statistics.fmean(times)
         mean_memory = statistics.fmean(memory)
-    except:
+    except BaseException:
         mean_time = results[0][0]
         mean_memory = results[0][1]
 

@@ -1,13 +1,14 @@
 import argparse
 import random
 
+
 def generate_input_file(path: str, vertices: int, density: float) -> None:
     edges = set()
 
     while len(edges) < density * vertices * (vertices - 1):
         a = random.randint(0, vertices - 1)
         b = random.randint(0, vertices - 1)
-        edges.add((a,b))
+        edges.add((a, b))
 
     file = open(path, "w")
 
@@ -16,6 +17,7 @@ def generate_input_file(path: str, vertices: int, density: float) -> None:
         file.write(f"{edge[0]} {edge[1]}\n")
 
     file.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

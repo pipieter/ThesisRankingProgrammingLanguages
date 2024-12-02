@@ -38,7 +38,8 @@ def PageRank_single(v: int, graph: Graph, ranks: list[float], damping: float):
     return rank
 
 
-def PageRank(graph: Graph, damping: float, epsilon: float = 1e-4) -> list[float]:
+def PageRank(graph: Graph, damping: float,
+             epsilon: float = 1e-4) -> list[float]:
     ranks = [1 / graph.vertices for _ in range(graph.vertices)]
     new_ranks = [1 / graph.vertices for _ in range(graph.vertices)]
 
