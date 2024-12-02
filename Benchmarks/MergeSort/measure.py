@@ -13,8 +13,7 @@ def run(command: str) -> None:
         peak_memory = 0
         start = time.time()
 
-        process = subprocess.Popen(
-            command, stdout=None, stderr=None, shell=False)
+        process = subprocess.Popen(command, stdout=None, stderr=None, shell=False)
         while process.poll() is None:
             try:
                 info = psutil.Process(process.pid)

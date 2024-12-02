@@ -12,8 +12,7 @@ def clear_caches(level: int = 3):
 
 
 def get_process_information(pid: int) -> dict | None:
-    result = subprocess.run(
-        ["ps", "-p", str(pid), "-o", "rss"], capture_output=True)
+    result = subprocess.run(["ps", "-p", str(pid), "-o", "rss"], capture_output=True)
     if result.returncode != 0:
         return None
     memory = int(result.stdout.decode("utf-8").split("\n")[1])
@@ -126,8 +125,7 @@ def run_benchmark(
                 sample = get_process_information(process.pid)
 
                 timestamp = time.time()
-                sample["runtime_ms"] = round(
-                    (timestamp - last_measurement) * 1000)
+                sample["runtime_ms"] = round((timestamp - last_measurement) * 1000)
                 last_measurement = timestamp
 
                 process_data["samples"].append(sample)

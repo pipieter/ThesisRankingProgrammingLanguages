@@ -21,10 +21,7 @@ def generate_input_file(path: str, lines: int, length: int) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "amount",
-        type=int,
-        help="The amount of ids to generate.")
+    parser.add_argument("amount", type=int, help="The amount of ids to generate.")
     parser.add_argument(
         "--length",
         type=int,
