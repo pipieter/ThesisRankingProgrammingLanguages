@@ -8,6 +8,14 @@ def generate_id(length: int) -> str:
     chars = random.choices(alphabet, k=length)
     return "".join(chars)
 
+def generate_input_file(path: str, lines: int, length: int) -> None:
+    file = open(path, "w")
+
+    for _ in range(lines):
+        id = generate_id(length)
+        file.write(id + "\n")
+    
+    file.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -23,10 +31,4 @@ if __name__ == "__main__":
     amount = int(args.amount)
     length = int(args.length)
 
-    file = open(f"data/{amount}.data", "w")
-
-    for _ in range(amount):
-        id = generate_id(length)
-        file.write(id + "\n")
-
-    file.close()
+    generate_input_file(f"data/{amount}.data", amount, length)
