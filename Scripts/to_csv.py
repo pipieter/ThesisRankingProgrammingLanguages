@@ -52,8 +52,7 @@ def get_resources_data(resources_file_path: str) -> ResourceData:
             data = json.loads(line)
             runtime = data["total_runtime_ms"] / 1000  # In seconds
             memory = sum(
-                [mem["memory"] * mem["runtime_ms"] /
-                    1000 for mem in data["samples"]]
+                [mem["memory"] * mem["runtime_ms"] / 1000 for mem in data["samples"]]
             )
             avg_memory = memory / runtime
 
@@ -69,6 +68,48 @@ def get_resources_data(resources_file_path: str) -> ResourceData:
     return ResourceData(runtime=runtime, avg_memory=avg_memory)
 
 
+class BenchmarkData:
+    benchmark: str
+    language: str
+    identifier: str
+
+    energy: EnergyData
+    resources: ResourceData
+
+    def __init__(self, benchmark: str, language: str, identifier: str) -> None:
+        self.benchmark = benchmark
+        self.language = language
+        self.identifier = identifier
+
+        energy_file = f"{benchmark}.{language}.{identifier}.energy.json"
+        resources_file = f"{benchmark}.{language}.{identifier}.resources.json"
+
+        energy_path = os.path.join(ROOT, "Results", energy_file)
+        resources_path = os.path.join(ROOT, "Results", resources_file)
+
+        self.energy = get_energy_data(energy_path)
+        self.resources = get_resources_data(resources_path)
+
+    def __lt__(self, other) -> bool:
+        if not isinstance(other, BenchmarkData):
+            return False
+
+        if self.benchmark != other.benchmark:
+            return self.benchmark < other.benchmark
+
+        if self.identifier != other.identifier:
+            return self.benchmark < other.identifier
+
+        return self.language < other.language
+
+    def to_csv_line(self, separator: str = ";") -> str:
+        return f"{self.benchmark}{separator}{self.identifier}{separator}{self.language}{separator}{self.energy.energy:.4f}{separator}{self.resources.runtime:.4f}{separator}{self.resources.avg_memory:.4f}"
+
+    @staticmethod
+    def csv_header(separator: str = ";") -> str:
+        return f"Benchmark{separator}Identifier{separator}Language{separator}Energy (Ws){separator}Runtime (s){separator}Average memory (KB)"
+
+
 def parse():
     path = os.path.join(ROOT, "Results")
 
@@ -76,24 +117,16 @@ def parse():
     files = [file for file in files if file.endswith(".json")]
 
     energy_files = [file for file in files if file.endswith(".energy.json")]
-    resources_files = [
-        file for file in files if file.endswith(".resources.json")]
 
+    data = []
     for energy_file in energy_files:
         benchmark, language, identifier, _, _ = energy_file.split(".")
-        file_path = os.path.join(path, energy_file)
-        energy = get_energy_data(file_path)
-        print(f"{benchmark};{language};{identifier};{energy.energy:.4f}")
+        data.append(BenchmarkData(benchmark, language, identifier))
+    data = sorted(data)
 
-    print()
-
-    for resources_file in resources_files:
-        benchmark, language, identifier, _, _ = resources_file.split(".")
-        file_path = os.path.join(path, resources_file)
-        resources = get_resources_data(file_path)
-        print(
-            f"{benchmark};{language};{identifier};{resources.runtime:.4f};{resources.avg_memory:.4f}"
-        )
+    print(BenchmarkData.csv_header())
+    for d in data:
+        print(d.to_csv_line())
 
 
 if __name__ == "__main__":
