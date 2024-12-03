@@ -10,15 +10,12 @@ sudo docker run -it --privileged thesis
 
 The first command is required as the RAPL uses the MSR registers to measure energy usage. The `--priviledged` flag is required to drop the caches.
 
-Running the last command opens a bash shell inside the Docker container.  In order to measure the benchmarks, run:
+Running the last command opens a bash shell inside the Docker container. Inside the container, to run the benchmarks, do:
 
 ```bash
-python3 -m Scripts.measure
-```
-
-You can then summarize the results with:
-```bash
-python3 -m Scripts.to_csv
+python3 -m Scripts.compile      # Compile the benchmarks
+python3 -m Scripts.measure      # Measure the benchmarks
+python3 -m Scripts.to_csv       # Summarize the benchmarks
 ```
 
 To copy the results to somewhere:

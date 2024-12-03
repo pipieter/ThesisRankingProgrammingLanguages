@@ -47,20 +47,6 @@ def run_benchmark(
         stdout = subprocess.PIPE
         stderr = subprocess.STDOUT
 
-    # Compile the program
-    compilation = subprocess.run(
-        ["make", "compile"],
-        stdin=stdin,
-        stdout=stdout,
-        stderr=stderr,
-        cwd=cwd,
-        timeout=timeout,
-        env=args,
-    )
-    if compilation.returncode != 0:
-        print(compilation.stdout.decode("utf-8"))
-        exit(1)
-
     # Run the program $iterations times
     energy_file_name = f"{benchmark}.{language}.{benchmark_identifier}.energy.json"
     resources_file_name = (
