@@ -1,13 +1,45 @@
 import argparse
 import os
-
-import Benchmarks.MergeSort.generate as MergeSort
-import Benchmarks.PageRank.generate as PageRank
+import random
+import string
 
 
 def verify_dir(dir: str) -> None:
     if not os.path.exists(dir):
         os.makedirs(dir)
+
+
+def generate_id(length: int) -> str:
+    alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    chars = random.choices(alphabet, k=length)
+    return "".join(chars)
+
+
+def generate_ids_file(path: str, lines: int, id_length: int) -> None:
+    file = open(path, "w")
+
+    for _ in range(lines):
+        id = generate_id(id_length)
+        file.write(id + "\n")
+
+    file.close()
+
+
+def generate_graph(path: str, vertices: int, density: float) -> None:
+    edges = set()
+
+    while len(edges) < density * vertices * (vertices - 1):
+        a = random.randint(0, vertices - 1)
+        b = random.randint(0, vertices - 1)
+        edges.add((a, b))
+
+    file = open(path, "w")
+
+    file.write(f"{vertices}\n")
+    for edge in edges:
+        file.write(f"{edge[0]} {edge[1]}\n")
+
+    file.close()
 
 
 def generate_merge_sort(sizes: list[int], verbose: bool) -> None:
@@ -16,7 +48,7 @@ def generate_merge_sort(sizes: list[int], verbose: bool) -> None:
     for size in sizes:
         if verbose:
             print(f"Generating MergeSort file with {size} lines.")
-        MergeSort.generate_input_file(f"./Data/MergeSort/{size}", size, 63)
+        generate_ids_file(f"./Data/MergeSort/{size}", size, 255)
 
 
 def generate_pagerank(vertex_counts: list[int], verbose: bool) -> None:
@@ -25,7 +57,7 @@ def generate_pagerank(vertex_counts: list[int], verbose: bool) -> None:
     for vertex_count in vertex_counts:
         if verbose:
             print(f"Generating PageRank file with {vertex_count} vertices.")
-        PageRank.generate_input_file(f"Data/PageRank/{vertex_count}", vertex_count, 0.2)
+        generate_graph(f"Data/PageRank/{vertex_count}", vertex_count, 0.2)
 
 
 if __name__ == "__main__":
@@ -41,5 +73,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     verbose = args.verbose
 
-    generate_merge_sort([512, 1024, 2048, 4096], verbose)
-    generate_pagerank([512, 1024, 2048, 4096], verbose)
+    merge_sort_inputs = [1_000, 10_000, 100_000, 1_000_000]
+    pagerank_inputs = [1_000] #, 10_000, 100_000]
+
+    generate_merge_sort(merge_sort_inputs, verbose)
+    # generate_pagerank(pagerank_inputs, verbose)
