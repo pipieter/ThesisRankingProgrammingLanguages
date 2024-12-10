@@ -93,10 +93,11 @@ def run_benchmark(
                 cwd=cwd,
                 env=args,
             ).decode("utf-8")
+            command  = command.strip().split(" ")
 
             process = subprocess.Popen(
                 command,
-                shell=True,
+                shell=False,
                 stdin=stdin,
                 stdout=stdout,
                 stderr=stderr,
