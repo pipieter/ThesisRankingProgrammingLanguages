@@ -63,7 +63,7 @@ impl MergeSortBlock {
 }
 
 fn write_block(lines: &Vec<String>, index: i32) -> String {
-    let file_name = format!("./temp/block.{index}.temp");
+    let file_name = format!("./block.{index}.temp");
     let mut file = File::create(&file_name).unwrap();
 
     for line in lines {

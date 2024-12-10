@@ -1,10 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	cargo build --release
+	javac -d . MergeSort.java MergeSortBlock.java
 
 clean:
-	cargo clean
+	rm MergeSort
 
 measure:
 ifndef JSON
@@ -12,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" ./target/release/merge-sort $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" java MergeSort $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./target/release/merge-sort $(ARGS)
+	@echo java MergeSort $(ARGS)

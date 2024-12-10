@@ -1,10 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	cargo build --release
+	@:
 
 clean:
-	cargo clean
+	@:
 
 measure:
 ifndef JSON
@@ -12,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" ./target/release/merge-sort $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" python3 merge_sort.py $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./target/release/merge-sort $(ARGS)
+	@echo python3 merge_sort.py $(ARGS)

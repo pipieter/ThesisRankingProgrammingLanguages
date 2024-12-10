@@ -60,7 +60,7 @@ public class MergeSort
 {
     private static string WriteBlock(List<string> lines, int index)
     {
-        string fileName = $"temp/block.{index}.temp";
+        string fileName = $"block.{index}.temp";
         File.WriteAllLines(fileName, lines);
         return fileName;
     }

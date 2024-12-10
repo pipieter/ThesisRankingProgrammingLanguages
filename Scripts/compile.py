@@ -38,7 +38,7 @@ def compile(benchmark: str, language: str, verbose: bool) -> None:
 
 
 if __name__ == "__main__":
-    benchmarks = ["PageRank"]
+    benchmarks = ["PageRank", "MergeSort"]
     languages = ["C#", "C++", "Java", "PyPy", "Python", "Rust"]
 
     parser = argparse.ArgumentParser()

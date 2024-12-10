@@ -56,7 +56,7 @@ private:
 };
 
 string write_block(const vector<string> &lines, int index) {
-  string fileName = string("temp/block.") + to_string(index) + string(".temp");
+  string fileName = string("block.") + to_string(index) + string(".temp");
   ofstream out(fileName);
 
   for (const string &line : lines) {

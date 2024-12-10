@@ -1,10 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	cargo build --release
+	g++ merge_sort.cpp -o merge_sort -O3
 
 clean:
-	cargo clean
+	rm merge_sort
 
 measure:
 ifndef JSON
@@ -12,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" ./target/release/merge-sort $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" ./merge_sort $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./target/release/merge-sort $(ARGS)
+	@echo ./merge_sort $(ARGS)

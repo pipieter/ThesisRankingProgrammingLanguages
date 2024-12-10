@@ -11,7 +11,7 @@ import java.util.Collections;
 class MergeSort {
 
     private static String writeBlock(ArrayList<String> lines, int index) throws IOException {
-        String fileName = "temp/block." + index + ".temp";
+        String fileName = "block." + index + ".temp";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (String _line : lines) {
                 writer.write(_line);

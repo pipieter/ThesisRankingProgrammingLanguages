@@ -47,7 +47,7 @@ class Block(object):
 
 
 def write_block(lines: list[str], index: int) -> str:
-    file_name = f"temp/block.{index}.temp"
+    file_name = f"block.{index}.temp"
     with open(file_name, "w") as file:
         file.writelines(lines)
     return file_name
