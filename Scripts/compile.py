@@ -29,13 +29,17 @@ def compile(benchmark: str, language: str, verbose: bool) -> None:
     )
 
     if process.returncode != 0:
-        print(process.stdout.decode("utf-8"))
+        print(f"Could not compile {benchmark} for {language}")
+        if process.stdout is not None:
+            print(process.stdout.decode("utf-8"))
+        if process.stderr is not None:
+            print(process.stderr.decode("utf-8"))
         exit(1)
 
 
 if __name__ == "__main__":
     benchmarks = ["PageRank"]
-    languages =["C++", "Python"] # ["C#", "C++", "Java", "Python", "Rust"]
+    languages = ["C#", "C++", "Java", "PyPy", "Python", "Rust"]
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

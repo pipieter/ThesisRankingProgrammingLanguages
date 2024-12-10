@@ -72,11 +72,17 @@ RUN wget --no-verbose https://github.com/adoptium/temurin21-binaries/releases/do
     && rm OpenJDK21U-jdk_x64_linux_hotspot_$(echo $JAVA_VERSION | sed s/+/_/).tar.gz
 
 
+# PyPy.
+RUN add-apt-repository ppa:pypy/ppa
+RUN apt update
+RUN apt install pypy3 -y
+
 WORKDIR /root/ranking-languages
+
 COPY Benchmarks Benchmarks
 COPY Data Data
 COPY Scripts Scripts
 COPY Results Results
 COPY RAPL RAPL
+
 ENTRYPOINT [ "/bin/bash" ]
-# ENTRYPOINT [ "python3", "-m", "Scripts.measure" ]

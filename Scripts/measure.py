@@ -35,14 +35,14 @@ def measure_pagerank(languages: list[str], verbose: bool) -> None:
                 language=language,
                 args=args,
                 timeout=1000,
-                iterations=5,
+                iterations=1,
                 verbose=verbose,
                 clear_cache=True,
             )
 
 
 if __name__ == "__main__":
-    languages = ["C++", "C#", "Java", "Python", "Rust"]
+    languages = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
     verbose = True
 
     measure_pagerank(languages, verbose)
