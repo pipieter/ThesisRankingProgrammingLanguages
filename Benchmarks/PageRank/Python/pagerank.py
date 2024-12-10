@@ -11,20 +11,20 @@ class Graph(object):
         file = open(path, "r")
 
         line = file.readline()
-        vertices = int(line)
-
-        self.vertices = vertices
-        self.incoming = [set() for _ in range(vertices)]
-        self.outgoing = [set() for _ in range(vertices)]
-
-        line = file.readline()
         while line != "":
-            a, b = line.split(" ")
-            a = int(a)
-            b = int(b)
+            if line.startswith("p"):
+                _, _, vertices, _ = line.split(" ")
+                self.vertices = int(vertices)
+                self.incoming = [set() for _ in range(self.vertices)]
+                self.outgoing = [set() for _ in range(self.vertices)]
 
-            self.outgoing[a].add(b)
-            self.incoming[b].add(a)
+            elif line.startswith("a") or line.startswith("e"):
+                elements = line.split(" ")
+                a = int(elements[1])
+                b = int(elements[2])
+
+                self.outgoing[a].add(b)
+                self.incoming[b].add(a)
 
             line = file.readline()
 

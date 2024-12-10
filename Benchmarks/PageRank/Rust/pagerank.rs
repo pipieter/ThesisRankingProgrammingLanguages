@@ -12,45 +12,50 @@ struct Graph {
 }
 
 impl Graph {
-    fn new(path: &str) -> Graph {
-        let mut reader: BufReader<File> = BufReader::new(File::open(path).unwrap());
+    fn new(path: &str) -> Result<Graph, Box<dyn std::error::Error>> {
+        let reader: BufReader<File> = BufReader::new(File::open(path).unwrap());
 
-        let mut line = String::new();
-        let _ = reader.read_line(&mut line);
-        line = line.trim().to_string();
-
-        let vertices = line.parse::<usize>().unwrap();
-        let mut incoming: Vec<HashSet<i32>> = Vec::with_capacity(vertices);
-        let mut outgoing: Vec<HashSet<i32>> = Vec::with_capacity(vertices);
-
-        for _ in 0..vertices {
-            incoming.push(HashSet::<i32>::new());
-            outgoing.push(HashSet::<i32>::new());
-        }
+        let mut vertices: usize = 0;
+        let mut incoming: Vec<HashSet<i32>> = Vec::new();
+        let mut outgoing: Vec<HashSet<i32>> = Vec::new();
 
         for line in reader.lines() {
             if line.is_err() {
                 continue;
             }
+            let line = line.unwrap();
 
-            let line = line.unwrap().trim().to_string();
-            let values: Vec<&str> = line.split(' ').collect();
-            let a = values[0].parse::<i32>().unwrap();
-            let b = values[1].parse::<i32>().unwrap();
+            if line.starts_with('p') {
+                let values = line.split(' ').collect::<Vec<&str>>();
 
-            outgoing.get_mut(a as usize).unwrap().insert(b);
-            incoming.get_mut(b as usize).unwrap().insert(a);
+                vertices = values[2].parse::<usize>()?;
+                incoming = Vec::with_capacity(vertices);
+                outgoing = Vec::with_capacity(vertices);
+
+                for _ in 0..vertices {
+                    incoming.push(HashSet::new());
+                    outgoing.push(HashSet::new());
+                }
+            } else if line.starts_with('e') || line.starts_with('a') {
+                let values = line.split(' ').collect::<Vec<&str>>();
+
+                let v0 = values[1].parse::<i32>()?;
+                let v1 = values[2].parse::<i32>()?;
+
+                outgoing.get_mut(v0 as usize).unwrap().insert(v1);
+                incoming.get_mut(v1 as usize).unwrap().insert(v0);
+            }
         }
 
-        Graph {
+        Ok(Graph {
             vertices,
             incoming,
             outgoing,
-        }
+        })
     }
 }
 
-fn page_rank_single(v: i32, graph: &Graph, ranks: &Vec<f32>, damping: f32) -> f32 {
+fn page_rank_single(v: i32, graph: &Graph, ranks: &[f32], damping: f32) -> f32 {
     let mut rank = (1f32 - damping) / graph.vertices as f32;
 
     for u in graph.incoming.get(v as usize).unwrap() {
@@ -79,7 +84,7 @@ fn page_rank(graph: &Graph, damping: f32, epsilon: f32) -> Vec<f32> {
 
         change = 0f32;
         for v in 0..graph.vertices {
-            change += (ranks[v] - new_ranks[v]).abs() as f32;
+            change += (ranks[v] - new_ranks[v]).abs();
         }
 
         for v in 0..graph.vertices {
@@ -90,13 +95,13 @@ fn page_rank(graph: &Graph, damping: f32, epsilon: f32) -> Vec<f32> {
     ranks
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
 
     let file = args.get(1).unwrap();
     let out = args.get(2).unwrap();
 
-    let graph = Graph::new(file);
+    let graph = Graph::new(file)?;
     let ranks = page_rank(&graph, 0.85, 1e-4f32);
 
     let mut file = File::create(out).unwrap();
@@ -105,4 +110,6 @@ fn main() {
         let line = format!("{i} {rank}\n");
         let _ = file.write(line.as_bytes());
     }
+
+    Ok(())
 }

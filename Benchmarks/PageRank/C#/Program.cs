@@ -9,26 +9,34 @@
         using StreamReader reader = new(path);
 
         string? line = reader.ReadLine();
-        int vertices = int.Parse(line!);
-
-        NVertices = vertices;
-        Outgoing = new HashSet<int>[vertices];
-        Incoming = new HashSet<int>[vertices];
-
-        for (int i = 0; i < vertices; i++)
+        while (line != null)
         {
-            Outgoing[i] = [];
-            Incoming[i] = [];
-        }
+            if (line.StartsWith('p'))
+            {
+                string[] values = line.Split(' ');
+                int vertices = int.Parse(values[2]);
 
-        while ((line = reader.ReadLine()) != null)
-        {
-            string[] values = line.Split(" ");
-            int a = int.Parse(values[0]);
-            int b = int.Parse(values[1]);
+                NVertices = vertices;
+                Outgoing = new HashSet<int>[vertices];
+                Incoming = new HashSet<int>[vertices];
 
-            Outgoing[a].Add(b);
-            Incoming[b].Add(a);
+                for (int i = 0; i < vertices; i++)
+                {
+                    Outgoing[i] = [];
+                    Incoming[i] = [];
+                }
+            }
+            else if (line.StartsWith('a') || line.StartsWith('e'))
+            {
+                string[] values = line.Split(' ');
+                int a = int.Parse(values[1]);
+                int b = int.Parse(values[2]);
+
+                Outgoing[a].Add(b);
+                Incoming[b].Add(a);
+            }
+
+            line = reader.ReadLine();
         }
     }
 }
@@ -37,7 +45,7 @@ class PageRanker
 {
     public static float PageRank_single(int v, Graph graph, float[] ranks, float damping)
     {
-        float rank = (1 - damping) / graph.NVertices;
+        float rank = (1.0f - damping) / graph.NVertices;
 
         foreach (int u in graph.Incoming[v])
             rank += damping * ranks[u] / graph.Outgoing[u].Count;

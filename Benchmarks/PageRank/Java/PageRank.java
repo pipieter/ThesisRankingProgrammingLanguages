@@ -14,28 +14,33 @@ class Graph {
     public ArrayList<HashSet<Integer>> incoming;
     public ArrayList<HashSet<Integer>> outgoing;
 
-    @SuppressWarnings("unchecked")
     public Graph(String file) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
             String line = reader.readLine();
 
-            int vertices = Integer.parseInt(line);
-            this.nvertices = vertices;
-            this.incoming = new ArrayList<>(vertices);
-            this.outgoing = new ArrayList<>(vertices);
-            for (int i = 0; i < vertices; i++) {
-                this.incoming.add(new HashSet<>());
-                this.outgoing.add(new HashSet<>());
-            }
-
-            line = reader.readLine();
             while (line != null) {
-                String[] values = line.split(" ");
-                int a = Integer.parseInt(values[0]);
-                int b = Integer.parseInt(values[1]);
+                if (line.startsWith("p")) {
+                    String[] values = line.split(" ");
+                    int vertices = Integer.parseInt(values[2]);
 
-                this.outgoing.get(a).add(b);
-                this.incoming.get(b).add(a);
+                    this.nvertices = vertices;
+                    this.incoming = new ArrayList<>(vertices);
+                    this.outgoing = new ArrayList<>(vertices);
+                    for (int i = 0; i < vertices; i++) {
+                        this.incoming.add(new HashSet<>());
+                        this.outgoing.add(new HashSet<>());
+                    }
+                } else if (line.startsWith("e") || line.startsWith("a")) {
+                    String[] values = line.split(" ");
+
+                    int a = Integer.parseInt(values[1]);
+                    int b = Integer.parseInt(values[2]);
+
+                    this.outgoing.get(a).add(b);
+                    this.incoming.get(b).add(a);
+
+                }
 
                 line = reader.readLine();
             }

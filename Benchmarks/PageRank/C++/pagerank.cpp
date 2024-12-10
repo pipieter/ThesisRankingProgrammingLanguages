@@ -1,11 +1,24 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <vector>
 
 using namespace std;
+
+vector<string> splitString(const string &str, char delimiter) {
+  stringstream stream(str);
+  vector<string> split;
+  string current;
+
+  while (getline(stream, current, delimiter)) {
+    split.push_back(current);
+  }
+
+  return split;
+}
 
 class Graph {
 public:
@@ -16,25 +29,25 @@ public:
 public:
   Graph(const string &path) {
     ifstream file(path);
-
     string line;
-    getline(file, line);
-
-    int nvertices = atoi(line.c_str());
-    this->vertices = nvertices;
-    this->incoming = vector<unordered_set<int>>(nvertices);
-    this->outgoing = vector<unordered_set<int>>(nvertices);
 
     while (getline(file, line)) {
-      size_t splitpos = line.find(" ");
-      string str_a = line.substr(0, splitpos);
-      string str_b = line.substr(splitpos + 1, line.length());
+      if (line[0] == 'p') {
+        vector<string> values = splitString(line, ' ');
+        int nvertices = atoi(values[2].c_str());
 
-      int a = atoi(str_a.c_str());
-      int b = atoi(str_b.c_str());
+        this->vertices = nvertices;
+        this->incoming = vector<unordered_set<int>>(nvertices);
+        this->outgoing = vector<unordered_set<int>>(nvertices);
+      } else if (line[0] == 'a' || line[0] == 'e') {
+        vector<string> values = splitString(line, ' ');
 
-      outgoing[a].insert(b);
-      incoming[b].insert(a);
+        int v0 = atoi(values[1].c_str());
+        int v1 = atoi(values[2].c_str());
+
+        outgoing[v0].insert(v1);
+        incoming[v1].insert(v0);
+      }
     }
 
     file.close();
