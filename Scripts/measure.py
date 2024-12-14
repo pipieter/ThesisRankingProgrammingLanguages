@@ -1,3 +1,4 @@
+import argparse
 import os
 
 from Scripts.benchmark import run_benchmark
@@ -68,8 +69,8 @@ def measure_merge_sort(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_setsort(languages: list[str], verbose: bool) -> None:
-    benchmark = "SetSort"
+def measure_setsort_ordered(languages: list[str], verbose: bool) -> None:
+    benchmark = "SetSortOrdered"
 
     input_dir = os.path.join(ROOT, "Data", "SetSort")
     files = [int(file) for file in get_files(input_dir)]
@@ -96,9 +97,29 @@ def measure_setsort(languages: list[str], verbose: bool) -> None:
 
 
 if __name__ == "__main__":
-    languages = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
-    verbose = True
+    LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
+    BENCHMARKS = ["PageRank", "MergeSort", "SetSortOrdered"]
 
-    # measure_pagerank(languages, verbose)
-    # measure_merge_sort(languages, verbose)
-    measure_setsort(languages, verbose)
+    BENCHMARK_MAPPINGS = {
+        "PageRank": measure_pagerank,
+        "MergeSort": measure_merge_sort,
+        "SetSortOrdered": measure_setsort_ordered,
+    }
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--languages", type=str, nargs="+", default=LANGUAGES)
+    parser.add_argument("--benchmarks", type=str, nargs="+", default=BENCHMARKS)
+    parser.add_argument(
+        "--verbose",
+        type=bool,
+        default=False,
+        action=argparse.BooleanOptionalAction,
+    )
+
+    args = parser.parse_args()
+    languages = args.languages
+    benchmarks = args.benchmarks
+    verbose = args.verbose
+
+    for benchmark in benchmarks:
+        BENCHMARK_MAPPINGS[benchmark](languages, verbose)
