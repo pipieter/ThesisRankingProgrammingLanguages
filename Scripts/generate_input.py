@@ -42,6 +42,13 @@ def generate_graph(path: str, vertices: int, density: float) -> None:
     file.close()
 
 
+def generate_int_list(path: str, count: int, max_value: int) -> None:
+    with open(path, "w") as file:
+        for _ in range(count):
+            value = random.randint(0, max_value)
+            file.write(f"{value}\n")
+
+
 def generate_merge_sort(sizes: list[int], verbose: bool) -> None:
     verify_dir("./Data/MergeSort")
 
@@ -60,6 +67,15 @@ def generate_pagerank(vertex_counts: list[int], verbose: bool) -> None:
         generate_graph(f"Data/PageRank/{vertex_count}", vertex_count, 0.2)
 
 
+def generate_setsort(counts: list[int], verbose: bool) -> None:
+    verify_dir("./Data/SetSort")
+
+    for count in counts:
+        if verbose:
+            print(f"Generating PageRank file with {count} lines.")
+        generate_int_list(f"Data/SetSort/{count}", count, int(count / 20))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -74,7 +90,9 @@ if __name__ == "__main__":
     verbose = args.verbose
 
     merge_sort_inputs = [1_000, 10_000, 100_000, 1_000_000]
-    pagerank_inputs = [1_000] #, 10_000, 100_000]
+    pagerank_inputs = [1_000]  # , 10_000, 100_000]
+    setsort_inputs = [100_000, 1_000_000, 10_000_000, 100_000_000]
 
-    generate_merge_sort(merge_sort_inputs, verbose)
+    # generate_merge_sort(merge_sort_inputs, verbose)
     # generate_pagerank(pagerank_inputs, verbose)
+    generate_setsort(setsort_inputs, verbose)
