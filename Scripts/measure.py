@@ -123,15 +123,48 @@ def measure_setsort_unordered(languages: list[str], verbose: bool) -> None:
             )
 
 
+def measure_ionumber(languages: list[str], verbose: bool) -> None:
+    benchmark = "IONumber"
+
+    input_dir = os.path.join(ROOT, "Data", "IONumber")
+    files = [int(file) for file in get_files(input_dir)]
+    files = sorted(files)
+
+    for file in files:
+        out = os.path.join(ROOT, "out.temp")
+
+        args = dict()
+        args["ARGS"] = f'{file} "{out}" 512000'
+
+        for language in languages:
+            run_benchmark(
+                benchmark=benchmark,
+                benchmark_identifier=str(file),
+                language=language,
+                args=args,
+                timeout=1000,
+                iterations=1,
+                verbose=verbose,
+                clear_cache=True,
+            )
+
+
 if __name__ == "__main__":
     LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
-    BENCHMARKS = ["PageRank", "MergeSort", "SetSortOrdered", "SetSortOrdered"]
+    BENCHMARKS = [
+        "PageRank",
+        "MergeSort",
+        "SetSortOrdered",
+        "SetSortOrdered",
+        "IONumber",
+    ]
 
     BENCHMARK_MAPPINGS = {
         "PageRank": measure_pagerank,
         "MergeSort": measure_merge_sort,
         "SetSortOrdered": measure_setsort_ordered,
         "SetSortUnordered": measure_setsort_unordered,
+        "IONumber": measure_ionumber,
     }
 
     parser = argparse.ArgumentParser()

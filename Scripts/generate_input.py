@@ -49,6 +49,11 @@ def generate_int_list(path: str, count: int, max_value: int) -> None:
             file.write(f"{value}\n")
 
 
+def generate_empty_file(path: str):
+    with open(path, "w") as _:
+        ...
+
+
 def generate_merge_sort(sizes: list[int], verbose: bool) -> None:
     verify_dir("./Data/MergeSort")
 
@@ -76,6 +81,15 @@ def generate_setsort(counts: list[int], verbose: bool) -> None:
         generate_int_list(f"Data/SetSort/{count}", count, int(count / 20))
 
 
+def generate_ionumber(counts: list[int], verbose: bool) -> None:
+    verify_dir("./Data/IONumber")
+
+    for count in counts:
+        if verbose:
+            print(f"Generating IONumber file with {count} lines.")
+        generate_empty_file(f"Data/IONumber/{count}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -92,7 +106,9 @@ if __name__ == "__main__":
     merge_sort_inputs = [1_000, 10_000, 100_000, 1_000_000]
     pagerank_inputs = [1_000]  # , 10_000, 100_000]
     setsort_inputs = [100_000, 1_000_000, 10_000_000, 100_000_000]
+    ionumber_inputs = [1_000, 10_000, 100_000, 1_000_000]
 
     # generate_merge_sort(merge_sort_inputs, verbose)
     # generate_pagerank(pagerank_inputs, verbose)
-    generate_setsort(setsort_inputs, verbose)
+    # generate_setsort(setsort_inputs, verbose)
+    generate_ionumber(ionumber_inputs, verbose)
