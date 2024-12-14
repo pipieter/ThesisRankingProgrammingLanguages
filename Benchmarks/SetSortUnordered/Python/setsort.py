@@ -1,6 +1,5 @@
 import sys
 
-# Note: this is the same implementation the unordered set, as Python does not have an ordered set data structure
 
 def set_sort(in_file: str, out_file: str) -> None:
     values = set()
