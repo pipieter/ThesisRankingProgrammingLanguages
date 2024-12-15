@@ -12,14 +12,28 @@ def clear_caches(level: int = 3):
 
 
 def get_process_information(pid: int) -> dict | None:
-    result = subprocess.run(["ps", "-p", str(pid), "-o", "rss"], capture_output=True)
+    result = subprocess.run(
+        ["cat", f"/proc/{pid}/smaps_rollup"], capture_output=True)
     if result.returncode != 0:
         return None
-    memory = int(result.stdout.decode("utf-8").split("\n")[1])
+    lines = result.stdout.decode("utf-8").split("\n")
+    shared_memory = 0
+    private_memory = 0
+
+    for line in lines:
+        if line.startswith("Shared"):
+            memory = list(filter(None, line.split(" ")))
+            memory = int(memory[1])
+            shared_memory += memory
+        elif line.startswith("Private"):
+            memory = list(filter(None, line.split(" ")))
+            memory = int(memory[1])
+            private_memory += memory
 
     result = dict()
 
-    result["memory"] = memory
+    result["shared_memory"] = shared_memory
+    result["private_memory"] = private_memory
 
     return result
 
@@ -93,7 +107,7 @@ def run_benchmark(
                 cwd=cwd,
                 env=args,
             ).decode("utf-8")
-            command  = command.strip().split(" ")
+            command = command.strip().split(" ")
 
             process = subprocess.Popen(
                 command,
@@ -111,8 +125,13 @@ def run_benchmark(
             while process.poll() is None:
                 sample = get_process_information(process.pid)
 
+                # If no sample, the process has most likely stopped
+                if sample is None:
+                    break
+
                 timestamp = time.time()
-                sample["runtime_ms"] = round((timestamp - last_measurement) * 1000)
+                sample["runtime_ms"] = round(
+                    (timestamp - last_measurement) * 1000)
                 last_measurement = timestamp
 
                 process_data["samples"].append(sample)
