@@ -175,6 +175,33 @@ def measure_fib3(languages: list[str], verbose: bool) -> None:
             )
 
 
+def measure_triangle_count(languages: list[str], verbose: bool) -> None:
+    benchmark = "TriangleCount"
+
+    input_dir = os.path.join(ROOT, "Data", "Graphs")
+    files = [int(file) for file in get_files(input_dir)]
+    files = sorted(files)
+
+    for file in files:
+        filepath = os.path.join(input_dir, str(file))
+        out = os.path.join(ROOT, "out.temp")
+
+        args = dict()
+        args["ARGS"] = f'"{filepath}" "{out}"'
+
+        for language in languages:
+            run_benchmark(
+                benchmark=benchmark,
+                benchmark_identifier=str(file),
+                language=language,
+                args=args,
+                timeout=1000,
+                iterations=1,
+                verbose=verbose,
+                clear_cache=True,
+            )
+
+
 if __name__ == "__main__":
     LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
     BENCHMARKS = [
@@ -184,6 +211,7 @@ if __name__ == "__main__":
         "SetSortOrdered",
         "IONumber",
         "Fib3",
+        "TriangleCount",
     ]
 
     BENCHMARK_MAPPINGS = {
@@ -193,6 +221,7 @@ if __name__ == "__main__":
         "SetSortUnordered": measure_setsort_unordered,
         "IONumber": measure_ionumber,
         "Fib3": measure_fib3,
+        "TriangleCount": measure_triangle_count,
     }
 
     parser = argparse.ArgumentParser()
