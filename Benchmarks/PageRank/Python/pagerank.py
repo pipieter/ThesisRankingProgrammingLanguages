@@ -1,9 +1,10 @@
 import sys
+from typing import List, Set
 
 
 class Graph(object):
-    incoming: list[set[int]]
-    outgoing: list[set[int]]
+    incoming: List[Set[int]]
+    outgoing: List[Set[int]]
 
     vertices: int
 
@@ -31,14 +32,14 @@ class Graph(object):
         file.close()
 
 
-def PageRank_single(v: int, graph: Graph, ranks: list[float], damping: float):
+def PageRank_single(v: int, graph: Graph, ranks: List[float], damping: float):
     rank = (1 - damping) / graph.vertices
     for u in graph.incoming[v]:
         rank += damping * ranks[u] / len(graph.outgoing[u])
     return rank
 
 
-def PageRank(graph: Graph, damping: float, epsilon: float = 1e-4) -> list[float]:
+def PageRank(graph: Graph, damping: float, epsilon: float = 1e-4) -> List[float]:
     ranks = [1 / graph.vertices for _ in range(graph.vertices)]
     new_ranks = [1 / graph.vertices for _ in range(graph.vertices)]
 
