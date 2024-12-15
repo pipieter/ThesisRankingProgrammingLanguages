@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def read_value(path: str) -> int:
     try:
         with open(path, "r") as file:

@@ -16,7 +16,8 @@ def build(verbose: bool) -> None:
     build_path = os.path.join(ROOT, "RAPL", "build")
 
     # Delete existing files
-    subprocess.check_call(["rm", "-rf", build_path], stderr=stdout, stdout=stdout)
+    subprocess.check_call(["rm", "-rf", build_path],
+                          stderr=stdout, stdout=stdout)
 
     subprocess.check_call(
         [
