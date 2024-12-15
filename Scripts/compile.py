@@ -42,6 +42,7 @@ def compile(benchmark: str, language: str, verbose: bool) -> bool:
 if __name__ == "__main__":
     benchmarks = [
         "PageRank",
+        "PageRankArray",
         "MergeSort",
         "SetSortOrdered",
         "SetSortUnordered",

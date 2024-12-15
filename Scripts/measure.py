@@ -18,7 +18,34 @@ def get_files(directory: str) -> list[str]:
 def measure_pagerank(languages: list[str], verbose: bool) -> None:
     benchmark = "PageRank"
 
-    input_dir = os.path.join(ROOT, "Data", "PageRank")
+    input_dir = os.path.join(ROOT, "Data", "Graphs")
+    files = [int(file) for file in get_files(input_dir)]
+    files = sorted(files)
+
+    for file in files:
+        filepath = os.path.join(input_dir, str(file))
+        out = os.path.join(ROOT, "out.temp")
+
+        args = dict()
+        args["ARGS"] = f'"{filepath}" "{out}"'
+
+        for language in languages:
+            run_benchmark(
+                benchmark=benchmark,
+                benchmark_identifier=str(file),
+                language=language,
+                args=args,
+                timeout=1000,
+                iterations=1,
+                verbose=verbose,
+                clear_cache=True,
+            )
+
+
+def measure_pagerank_array(languages: list[str], verbose: bool) -> None:
+    benchmark = "PageRankArray"
+
+    input_dir = os.path.join(ROOT, "Data", "Graphs")
     files = [int(file) for file in get_files(input_dir)]
     files = sorted(files)
 
@@ -206,6 +233,7 @@ if __name__ == "__main__":
     LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
     BENCHMARKS = [
         "PageRank",
+        "PageRankArray",
         "MergeSort",
         "SetSortOrdered",
         "SetSortOrdered",
@@ -216,6 +244,7 @@ if __name__ == "__main__":
 
     BENCHMARK_MAPPINGS = {
         "PageRank": measure_pagerank,
+        "PageRankArray": measure_pagerank_array,
         "MergeSort": measure_merge_sort,
         "SetSortOrdered": measure_setsort_ordered,
         "SetSortUnordered": measure_setsort_unordered,
