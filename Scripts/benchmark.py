@@ -11,10 +11,11 @@ def clear_caches(level: int = 3):
     os.system(f'sh -c "sync; echo {level} > /proc/sys/vm/drop_caches"')
 
 
-def get_process_information(pid: int) -> dict | None:
+def get_process_memory(pid: int) -> tuple[bool, int, int]:
     result = subprocess.run(["cat", f"/proc/{pid}/smaps_rollup"], capture_output=True)
     if result.returncode != 0:
-        return None
+        return False, 0, 0
+
     lines = result.stdout.decode("utf-8").split("\n")
     shared_memory = 0
     private_memory = 0
@@ -29,10 +30,39 @@ def get_process_information(pid: int) -> dict | None:
             memory = int(memory[1])
             private_memory += memory
 
+    return True, shared_memory, private_memory
+
+
+def get_process_cores_used(pid: int) -> tuple[bool, int]:
+    result = subprocess.run(
+        ["ps", "-p", str(pid), "-L", "-o", "psr"], capture_output=True
+    )
+    if result.returncode != 0:
+        return False, 0
+    lines = result.stdout.decode("utf-8").split("\n")
+    cores = set()
+
+    # First line is always PSR, ignore it
+    for line in lines[1:]:
+        line = line.strip()
+        if len(line) > 0:
+            cores.add(int(line))
+
+    return True, len(cores)
+
+
+def get_process_information(pid: int) -> dict | None:
+    cores_success, cores = get_process_cores_used(pid)
+    memory_success, shared_memory, private_memory = get_process_memory(pid)
+
+    if not cores_success or not memory_success:
+        return None
+
     result = dict()
 
     result["shared_memory"] = shared_memory
     result["private_memory"] = private_memory
+    result["cores"] = cores
 
     return result
 
