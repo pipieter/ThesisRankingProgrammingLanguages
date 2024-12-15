@@ -169,8 +169,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--languages", type=str, nargs="+", default=LANGUAGES)
-    parser.add_argument("--benchmarks", type=str,
-                        nargs="+", default=BENCHMARKS)
+    parser.add_argument("--benchmarks", type=str, nargs="+", default=BENCHMARKS)
     parser.add_argument(
         "--verbose",
         type=bool,

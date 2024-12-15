@@ -59,10 +59,8 @@ def get_resources_data(resources_file_path: str) -> ResourceData:
             private_memory = 0
             for mem in data["samples"]:
                 # In seconds
-                shared_memory += mem["shared_memory"] * \
-                    mem["runtime_ms"] / 1000
-                private_memory += mem["private_memory"] * \
-                    mem["runtime_ms"] / 1000
+                shared_memory += mem["shared_memory"] * mem["runtime_ms"] / 1000
+                private_memory += mem["private_memory"] * mem["runtime_ms"] / 1000
 
             avg_shared_memory = shared_memory / runtime
             avg_private_memory = private_memory / runtime
