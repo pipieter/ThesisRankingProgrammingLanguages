@@ -234,15 +234,12 @@ if __name__ == "__main__":
         # "TriangleCount": measure_triangle_count,
     }
 
+    OPTIMIZATION = ["optimized", "unoptimized"]
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--languages", type=str, nargs="+", default=LANGUAGES)
     parser.add_argument("--benchmarks", type=str, nargs="+", default=BENCHMARKS)
-    parser.add_argument(
-        "--optimized",
-        type=bool,
-        default=False,
-        action=argparse.BooleanOptionalAction,
-    )
+    parser.add_argument("--optimized", type=str, nargs="+", default=OPTIMIZATION)
     parser.add_argument(
         "--verbose",
         type=bool,
@@ -253,9 +250,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     languages = args.languages
     benchmarks = args.benchmarks
-    optimized = args.optimized
+    optimization = args.optimized
     verbose = args.verbose
 
     verify_dir(os.path.join("./Results"))
     for benchmark in benchmarks:
-        BENCHMARK_MAPPINGS[benchmark](languages, optimized, verbose)
+        for opt in optimization:
+            optimized = False
+            if opt == "optimized":
+                optimized = True
+            BENCHMARK_MAPPINGS[benchmark](languages, optimized, verbose)
