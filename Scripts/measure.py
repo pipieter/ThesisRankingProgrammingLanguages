@@ -2,6 +2,7 @@ import argparse
 import os
 
 from Scripts.benchmark import run_benchmark
+from Scripts.generate_input import verify_dir
 
 
 ROOT = os.getcwd()
@@ -35,7 +36,7 @@ def measure_pagerank(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -62,7 +63,7 @@ def measure_pagerank_array(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -89,7 +90,7 @@ def measure_merge_sort(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -116,7 +117,7 @@ def measure_setsort_ordered(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -143,7 +144,7 @@ def measure_setsort_unordered(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -169,7 +170,7 @@ def measure_ionumber(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -195,7 +196,7 @@ def measure_fib3(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -222,7 +223,7 @@ def measure_triangle_count(languages: list[str], verbose: bool) -> None:
                 benchmark_identifier=str(file),
                 language=language,
                 args=args,
-                timeout=1000,
+                timeout=10000,
                 iterations=1,
                 verbose=verbose,
                 clear_cache=True,
@@ -236,10 +237,10 @@ if __name__ == "__main__":
         "PageRankArray",
         "MergeSort",
         "SetSortOrdered",
-        "SetSortOrdered",
+        "SetSortUnordered",
         "IONumber",
         "Fib3",
-        "TriangleCount",
+        # "TriangleCount",
     ]
 
     BENCHMARK_MAPPINGS = {
@@ -250,7 +251,7 @@ if __name__ == "__main__":
         "SetSortUnordered": measure_setsort_unordered,
         "IONumber": measure_ionumber,
         "Fib3": measure_fib3,
-        "TriangleCount": measure_triangle_count,
+        # "TriangleCount": measure_triangle_count,
     }
 
     parser = argparse.ArgumentParser()
@@ -268,5 +269,6 @@ if __name__ == "__main__":
     benchmarks = args.benchmarks
     verbose = args.verbose
 
+    verify_dir(os.path.join("./Results"))
     for benchmark in benchmarks:
         BENCHMARK_MAPPINGS[benchmark](languages, verbose)

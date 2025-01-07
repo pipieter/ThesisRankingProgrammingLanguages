@@ -82,7 +82,6 @@ WORKDIR /root/ranking-languages
 COPY Benchmarks Benchmarks
 COPY Data Data
 COPY Scripts Scripts
-COPY Results Results
 COPY RAPL RAPL
 
 ENTRYPOINT [ "/bin/bash" ]

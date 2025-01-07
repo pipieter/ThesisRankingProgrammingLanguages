@@ -25,23 +25,6 @@ def generate_ids_file(path: str, lines: int, id_length: int) -> None:
     file.close()
 
 
-def generate_graph(path: str, vertices: int, density: float) -> None:
-    edges = set()
-
-    while len(edges) < density * vertices * (vertices - 1):
-        a = random.randint(0, vertices - 1)
-        b = random.randint(0, vertices - 1)
-        edges.add((a, b))
-
-    file = open(path, "w")
-
-    file.write(f"{vertices}\n")
-    for edge in edges:
-        file.write(f"{edge[0]} {edge[1]}\n")
-
-    file.close()
-
-
 def generate_int_list(path: str, count: int, max_value: int) -> None:
     with open(path, "w") as file:
         for _ in range(count):
@@ -63,21 +46,12 @@ def generate_merge_sort(sizes: list[int], verbose: bool) -> None:
         generate_ids_file(f"./Data/MergeSort/{size}", size, 255)
 
 
-def generate_pagerank(vertex_counts: list[int], verbose: bool) -> None:
-    verify_dir("./Data/PageRank")
-
-    for vertex_count in vertex_counts:
-        if verbose:
-            print(f"Generating PageRank file with {vertex_count} vertices.")
-        generate_graph(f"Data/PageRank/{vertex_count}", vertex_count, 0.2)
-
-
 def generate_setsort(counts: list[int], verbose: bool) -> None:
     verify_dir("./Data/SetSort")
 
     for count in counts:
         if verbose:
-            print(f"Generating PageRank file with {count} lines.")
+            print(f"Generating SetSort file with {count} lines.")
         generate_int_list(f"Data/SetSort/{count}", count, int(count / 20))
 
 
@@ -113,13 +87,11 @@ if __name__ == "__main__":
     verbose = args.verbose
 
     merge_sort_inputs = [1_000, 10_000, 100_000, 1_000_000]
-    pagerank_inputs = [1_000]  # , 10_000, 100_000]
     setsort_inputs = [100_000, 1_000_000, 10_000_000, 100_000_000]
     ionumber_inputs = [1_000, 10_000, 100_000, 1_000_000]
     fib3_inputs = [10, 20, 30, 40]
 
-    # generate_merge_sort(merge_sort_inputs, verbose)
-    # generate_pagerank(pagerank_inputs, verbose)
+    generate_merge_sort(merge_sort_inputs, verbose)
     generate_setsort(setsort_inputs, verbose)
     generate_ionumber(ionumber_inputs, verbose)
     generate_fib3(fib3_inputs, verbose)

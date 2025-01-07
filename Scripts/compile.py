@@ -48,7 +48,7 @@ if __name__ == "__main__":
         "SetSortUnordered",
         "IONumber",
         "Fib3",
-        "TriangleCount",
+        # "TriangleCount",
     ]
     languages = ["C#", "C++", "Java", "PyPy", "Python", "Rust"]
 
