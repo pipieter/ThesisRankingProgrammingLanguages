@@ -75,7 +75,7 @@ def measure_pagerank_array(
 
 
 def measure_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> None:
-    benchmark = "MergeSort"
+    benchmark = "ExternalMergeSort"
 
     input_dir = os.path.join(ROOT, "Data", "MergeSort")
     files = [int(file) for file in get_files(input_dir)]
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
     BENCHMARKS = [
         "PageRank",
-        "MergeSort",
+        "ExternalMergeSort",
         "SetSort",
         "IONumber",
         "Fib3",
@@ -227,7 +227,7 @@ if __name__ == "__main__":
 
     BENCHMARK_MAPPINGS = {
         "PageRank": measure_pagerank,
-        "MergeSort": measure_merge_sort,
+        "ExternalMergeSort": measure_merge_sort,
         "SetSort": measure_setsort,
         "IONumber": measure_ionumber,
         "Fib3": measure_fib3,

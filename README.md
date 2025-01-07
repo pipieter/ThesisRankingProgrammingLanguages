@@ -34,10 +34,11 @@ The current RAPL utility tool is the one created by Nicolas van Kempen et al. an
 
 # To do
 
-| Benchmark | C#  | C++ | Java | PyPy | Python | Rust |
-| --------- | --- | --- | ---- | ---- | ------ | ---- |
-| Fib3      | -   | -   | -    | -    | -      | -    |
-| IONumber  | -   | -   | -    | -    | -      | -    |
-| MergeSort | -   | -   | -    | -    | -      | -    |
-| PageRank  | -   | O   | -    | -    | -      | -    |
-| SetSort   | -   | -   | -    | -    | -      | -    |
+| Benchmark         | C#  | C++ | Java | PyPy | Python | Rust |
+| ----------------- | --- | --- | ---- | ---- | ------ | ---- |
+| Fib3              | -   | -   | -    | -    | -      | -    |
+| IONumber          | -   | -   | -    | -    | -      | -    |
+| ExternalMergeSort | -   | -   | -    | -    | -      | -    |
+| MergeSort         | -   | -   | -    | -    | -      | -    |
+| PageRank          | -   | O   | -    | -    | -      | -    |
+| SetSort           | -   | -   | -    | -    | -      | -    |
