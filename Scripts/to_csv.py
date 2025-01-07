@@ -41,13 +41,13 @@ class ResourceData:
     runtime: float
     avg_shared_memory: float
     avg_private_memory: float
-    avg_cores: float
+    avg_cpu: float
 
     def __init__(self, path: str) -> None:
         runtimes = []
+        avg_cpus = []
         avg_shared_memories = []
         avg_private_memories = []
-        avg_cores_used = []
 
         with open(path, "r") as file:
             for line in file.readlines():
@@ -58,6 +58,7 @@ class ResourceData:
                     continue
 
                 total_runtime = data["total_runtime_ms"] / 1000  # In seconds
+                avg_cpu =  data["cpu"]
                 samples = data["samples"]
 
                 parsed = self._parse_samples(samples)
@@ -65,32 +66,30 @@ class ResourceData:
                     continue
 
                 (
-                    avg_core_seconds,
                     avg_shared_mem_seconds,
                     avg_private_mem_seconds,
                 ) = parsed
 
                 runtimes.append(total_runtime)
-                avg_cores_used.append(avg_core_seconds)
+                avg_cpus.append(avg_cpu)
                 avg_shared_memories.append(avg_shared_mem_seconds)
                 avg_private_memories.append(avg_private_mem_seconds)
 
         self.runtime = 0
-        self.avg_cores = 0
+        self.avg_cpu = 0
         self.avg_shared_memory = 0
         self.avg_private_memory = 0
 
         if len(runtimes) > 0:
             self.runtime = statistics.mean(runtimes)
-            self.avg_cores = statistics.mean(avg_cores_used)
+            self.avg_cpu = statistics.mean(avg_cpus)
             self.avg_shared_memory = statistics.mean(avg_shared_memories)
             self.avg_private_memory = statistics.mean(avg_private_memories)
 
-    def _parse_samples(self, samples: list[any]) -> None | tuple[float, float, float]:
+    def _parse_samples(self, samples: list[any]) -> None | tuple[float, float]:
         if len(samples) == 0:
             return None
 
-        total_core_seconds = 0
         total_shared_mem_seconds = 0
         total_private_memory_seconds = 0
         total_recorded_runtime_seconds = 0
@@ -98,13 +97,11 @@ class ResourceData:
         for sample in samples:
             sample_seconds = sample["runtime_ms"] / 1000
 
-            total_core_seconds += sample["cores"] * sample_seconds
             total_shared_mem_seconds += sample["shared_memory"] * sample_seconds
             total_private_memory_seconds += sample["private_memory"] * sample_seconds
 
             total_recorded_runtime_seconds += sample_seconds
 
-        avg_core_seconds = total_core_seconds / total_recorded_runtime_seconds
         avg_shared_mem_seconds = (
             total_shared_mem_seconds / total_recorded_runtime_seconds
         )
@@ -112,7 +109,7 @@ class ResourceData:
             total_private_memory_seconds / total_recorded_runtime_seconds
         )
 
-        return avg_core_seconds, avg_shared_mem_seconds, avg_private_mem_seconds
+        return avg_shared_mem_seconds, avg_private_mem_seconds
 
 
 class BenchmarkData:
@@ -165,7 +162,7 @@ class BenchmarkData:
             self.language,
             f"{self.resources.runtime:.4f}",
             f"{self.energy.energy:.4f}",
-            f"{self.resources.avg_cores:.4f}",
+            f"{self.resources.avg_cpu:.4f}",
             f"{avg_total_memory:.4f}",
             f"{self.resources.avg_shared_memory:.4f}",
             f"{self.resources.avg_private_memory:.4f}",
@@ -180,7 +177,7 @@ class BenchmarkData:
             "Language",
             "Runtime (s)",
             "Energy (Ws)",
-            "Average cores used",
+            "Average CPU utilization (%)",
             "Average total memory (KB)",
             "Average shared memory (KB)",
             "Average private memory (KB)",

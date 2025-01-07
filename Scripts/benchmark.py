@@ -32,37 +32,54 @@ def get_process_memory(pid: int) -> tuple[bool, int, int]:
 
     return True, shared_memory, private_memory
 
-
-def get_process_cores_used(pid: int) -> tuple[bool, int]:
+def get_cpu_core_count()-> int:
     result = subprocess.run(
-        ["ps", "-p", str(pid), "-L", "-o", "psr"], capture_output=True
+        ["nproc", "--all"], capture_output=True
+    )
+    if result.returncode != 0:
+        raise Exception("Could not determine number of cores")
+    data = result.stdout.decode("utf-8")
+    return int(data)
+
+
+def get_process_average_cpu_utilization(pid: int) -> tuple[bool, float]:
+    """
+    Get the average CPU utilization of a process.
+    Note: This gets the the average CPU utilization over its lifetime, and should
+    not be used to get the current CPU utilization.
+
+    Args:
+        pid (int): The PID of the process.
+
+    Returns:
+        tuple[bool, float]: The first value indicates if it could successfully get the CPU utilization. The second value gives the CPU utilization (in percentage) in case of  a success.
+    """
+    result = subprocess.run(
+        ["ps", "-p", str(pid), "-o", "%cpu", "--no-header"], capture_output=True
     )
     if result.returncode != 0:
         return False, 0
-    lines = result.stdout.decode("utf-8").split("\n")
-    cores = set()
+    data = result.stdout.decode("utf-8")
+    avg_cpu = float(data)
 
-    # First line is always PSR, ignore it
-    for line in lines[1:]:
-        line = line.strip()
-        if len(line) > 0:
-            cores.add(int(line))
-
-    return True, len(cores)
+    # ps doesn't scale CPU usage down based on the number of cores.
+    # For example an 8-core CPU could report values between 0% and 800%.
+    # We thus need to divide the avg_cpu with the number of cores
+    avg_cpu = avg_cpu / get_cpu_core_count()
+    
+    return True, avg_cpu
 
 
 def get_process_information(pid: int) -> dict | None:
-    cores_success, cores = get_process_cores_used(pid)
     memory_success, shared_memory, private_memory = get_process_memory(pid)
 
-    if not cores_success or not memory_success:
+    if not memory_success:
         return None
 
     result = dict()
 
     result["shared_memory"] = shared_memory
     result["private_memory"] = private_memory
-    result["cores"] = cores
 
     return result
 
@@ -150,8 +167,14 @@ def run_benchmark(
 
             start = time.time()
             last_measurement = start
+            avg_cpu = 0
 
             while process.poll() is None:
+                cpu_success, cpu_percent = get_process_average_cpu_utilization(process.pid)
+                if not cpu_success:
+                    break
+                
+                avg_cpu = cpu_percent
                 sample = get_process_information(process.pid)
 
                 # If no sample, the process has most likely stopped
@@ -172,6 +195,7 @@ def run_benchmark(
             end = time.time()
 
             process_data["total_runtime_ms"] = round((end - start) * 1000)
+            process_data["cpu"] = avg_cpu
             if killed:
                 process_data.samples = None
 
