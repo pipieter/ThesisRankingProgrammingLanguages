@@ -6,8 +6,8 @@ import subprocess
 ROOT = os.getcwd()
 
 
-def compile(benchmark: str, language: str, verbose: bool) -> bool:
-    print(f"Compiling {benchmark} - {language}")
+def compile(benchmark: str, language: str, optimized: bool, verbose: bool) -> bool:
+    print(f"Compiling {benchmark} - {language} (optimized = {optimized})")
 
     cwd = os.path.join(ROOT, "Benchmarks", benchmark, language)
     env = os.environ
@@ -19,8 +19,12 @@ def compile(benchmark: str, language: str, verbose: bool) -> bool:
         stdout = None
         stderr = None
 
+    if optimized:
+        makefile = "Makefile.optimized"
+    else:
+        makefile = "Makefile.unoptimized"
     process = subprocess.run(
-        ["make", "compile"],
+        ["make", "-f", makefile, "compile"],
         stdin=stdin,
         stdout=stdout,
         stderr=stderr,
@@ -72,6 +76,7 @@ if __name__ == "__main__":
 
     for benchmark in benchmarks:
         for language in languages:
-            result = compile(benchmark, language, verbose)
-            if not result and not ignore_errors:
-                exit(1)
+            for optimized in [False, True]:
+                result = compile(benchmark, language, optimized, verbose)
+                if not result and not ignore_errors:
+                    exit(1)

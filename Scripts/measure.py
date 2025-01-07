@@ -16,7 +16,7 @@ def get_files(directory: str) -> list[str]:
     return files
 
 
-def measure_pagerank(languages: list[str], verbose: bool) -> None:
+def measure_pagerank(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "PageRank"
 
     input_dir = os.path.join(ROOT, "Data", "Graphs")
@@ -35,6 +35,7 @@ def measure_pagerank(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -43,7 +44,9 @@ def measure_pagerank(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_pagerank_array(languages: list[str], verbose: bool) -> None:
+def measure_pagerank_array(
+    languages: list[str], optimized: bool, verbose: bool
+) -> None:
     benchmark = "PageRankArray"
 
     input_dir = os.path.join(ROOT, "Data", "Graphs")
@@ -62,6 +65,7 @@ def measure_pagerank_array(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -70,7 +74,7 @@ def measure_pagerank_array(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_merge_sort(languages: list[str], verbose: bool) -> None:
+def measure_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "MergeSort"
 
     input_dir = os.path.join(ROOT, "Data", "MergeSort")
@@ -89,6 +93,7 @@ def measure_merge_sort(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -97,7 +102,7 @@ def measure_merge_sort(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_setsort(languages: list[str], verbose: bool) -> None:
+def measure_setsort(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "SetSort"
 
     input_dir = os.path.join(ROOT, "Data", "SetSort")
@@ -116,6 +121,7 @@ def measure_setsort(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -124,7 +130,7 @@ def measure_setsort(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_ionumber(languages: list[str], verbose: bool) -> None:
+def measure_ionumber(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "IONumber"
 
     input_dir = os.path.join(ROOT, "Data", "IONumber")
@@ -142,6 +148,7 @@ def measure_ionumber(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -150,7 +157,7 @@ def measure_ionumber(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_fib3(languages: list[str], verbose: bool) -> None:
+def measure_fib3(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "Fib3"
 
     input_dir = os.path.join(ROOT, "Data", "Fib3")
@@ -168,6 +175,7 @@ def measure_fib3(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -176,7 +184,9 @@ def measure_fib3(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_triangle_count(languages: list[str], verbose: bool) -> None:
+def measure_triangle_count(
+    languages: list[str], optimized: bool, verbose: bool
+) -> None:
     benchmark = "TriangleCount"
 
     input_dir = os.path.join(ROOT, "Data", "Graphs")
@@ -195,6 +205,7 @@ def measure_triangle_count(languages: list[str], verbose: bool) -> None:
                 benchmark=benchmark,
                 benchmark_identifier=str(file),
                 language=language,
+                optimized=optimized,
                 args=args,
                 timeout=10000,
                 iterations=1,
@@ -227,6 +238,12 @@ if __name__ == "__main__":
     parser.add_argument("--languages", type=str, nargs="+", default=LANGUAGES)
     parser.add_argument("--benchmarks", type=str, nargs="+", default=BENCHMARKS)
     parser.add_argument(
+        "--optimized",
+        type=bool,
+        default=False,
+        action=argparse.BooleanOptionalAction,
+    )
+    parser.add_argument(
         "--verbose",
         type=bool,
         default=False,
@@ -236,8 +253,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     languages = args.languages
     benchmarks = args.benchmarks
+    optimized = args.optimized
     verbose = args.verbose
 
     verify_dir(os.path.join("./Results"))
     for benchmark in benchmarks:
-        BENCHMARK_MAPPINGS[benchmark](languages, verbose)
+        BENCHMARK_MAPPINGS[benchmark](languages, optimized, verbose)

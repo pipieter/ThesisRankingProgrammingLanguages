@@ -32,10 +32,9 @@ def get_process_memory(pid: int) -> tuple[bool, int, int]:
 
     return True, shared_memory, private_memory
 
-def get_cpu_core_count()-> int:
-    result = subprocess.run(
-        ["nproc", "--all"], capture_output=True
-    )
+
+def get_cpu_core_count() -> int:
+    result = subprocess.run(["nproc", "--all"], capture_output=True)
     if result.returncode != 0:
         raise Exception("Could not determine number of cores")
     data = result.stdout.decode("utf-8")
@@ -66,7 +65,7 @@ def get_process_average_cpu_utilization(pid: int) -> tuple[bool, float]:
     # For example an 8-core CPU could report values between 0% and 800%.
     # We thus need to divide the avg_cpu with the number of cores
     avg_cpu = avg_cpu / get_cpu_core_count()
-    
+
     return True, avg_cpu
 
 
@@ -88,6 +87,7 @@ def run_benchmark(
     benchmark: str,
     benchmark_identifier: str,
     language: str,
+    optimized: bool,
     args: dict,
     timeout: str,
     iterations: int,
@@ -107,10 +107,18 @@ def run_benchmark(
         stdout = subprocess.PIPE
         stderr = subprocess.STDOUT
 
-    # Run the program $iterations times
-    energy_file_name = f"{benchmark}.{language}.{benchmark_identifier}.energy.json"
+    if optimized:
+        optimizedStr = "optimized"
+        makefile = "Makefile.optimized"
+    else:
+        optimizedStr = "unoptimized"
+        makefile = "Makefile.unoptimized"
+
+    energy_file_name = (
+        f"{benchmark}.{optimizedStr}.{language}.{benchmark_identifier}.energy.json"
+    )
     resources_file_name = (
-        f"{benchmark}.{language}.{benchmark_identifier}.resources.json"
+        f"{benchmark}.{optimizedStr}.{language}.{benchmark_identifier}.resources.json"
     )
 
     energy_file_path = os.path.join(ROOT, "Results", energy_file_name)
@@ -118,7 +126,9 @@ def run_benchmark(
 
     args["JSON"] = energy_file_path
 
-    description = f"{benchmark}::{benchmark_identifier}::{language}".ljust(32)
+    description = (
+        f"{benchmark}::{optimizedStr}::{benchmark_identifier}::{language}".ljust(32)
+    )
     for _ in track(range(iterations), description=description):
         try:
             if clear_cache:
@@ -126,7 +136,7 @@ def run_benchmark(
 
             # Get (global) energy measurements
             process = subprocess.run(
-                ["make", "measure"],
+                ["make", "-f", makefile, "measure"],
                 stdin=stdin,
                 stdout=stdout,
                 stderr=stderr,
@@ -149,7 +159,7 @@ def run_benchmark(
             killed = False
 
             command = subprocess.check_output(
-                ["make", "command"],
+                ["make", "-f", makefile, "command"],
                 cwd=cwd,
                 env=args,
             ).decode("utf-8")
@@ -170,10 +180,12 @@ def run_benchmark(
             avg_cpu = 0
 
             while process.poll() is None:
-                cpu_success, cpu_percent = get_process_average_cpu_utilization(process.pid)
+                cpu_success, cpu_percent = get_process_average_cpu_utilization(
+                    process.pid
+                )
                 if not cpu_success:
                     break
-                
+
                 avg_cpu = cpu_percent
                 sample = get_process_information(process.pid)
 

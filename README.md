@@ -19,6 +19,7 @@ python3 -m Scripts.to_csv       # Summarize the benchmarks
 ```
 
 To copy the results to somewhere:
+
 ```bash
 sudo docker cp [CONTAINER_ID]:/root/ranking-languages/Results/. Results/.
 ```
@@ -30,4 +31,13 @@ The current RAPL utility tool is the one created by Nicolas van Kempen et al. an
 # Future notes:
 
 - Python 3.13.0 implements an experimental JIT compiler https://www.python.org/downloads/release/python-3130/ap
-- 
+
+# To do
+
+| Benchmark | C#  | C++ | Java | PyPy | Python | Rust |
+| --------- | --- | --- | ---- | ---- | ------ | ---- |
+| Fib3      | -   | -   | -    | -    | -      | -    |
+| IONumber  | -   | -   | -    | -    | -      | -    |
+| MergeSort | -   | -   | -    | -    | -      | -    |
+| PageRank  | -   | O   | -    | -    | -      | -    |
+| SetSort   | -   | -   | -    | -    | -      | -    |

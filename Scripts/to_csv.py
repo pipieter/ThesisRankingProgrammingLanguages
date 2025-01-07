@@ -58,7 +58,7 @@ class ResourceData:
                     continue
 
                 total_runtime = data["total_runtime_ms"] / 1000  # In seconds
-                avg_cpu =  data["cpu"]
+                avg_cpu = data["cpu"]
                 samples = data["samples"]
 
                 parsed = self._parse_samples(samples)
@@ -114,19 +114,25 @@ class ResourceData:
 
 class BenchmarkData:
     benchmark: str
+    optimized: str
     language: str
     identifier: str
 
     energy: EnergyData
     resources: ResourceData
 
-    def __init__(self, benchmark: str, language: str, identifier: str) -> None:
+    def __init__(
+        self, benchmark: str, optimized: str, language: str, identifier: str
+    ) -> None:
         self.benchmark = benchmark
+        self.optimized = optimized
         self.language = language
         self.identifier = identifier
 
-        energy_file = f"{benchmark}.{language}.{identifier}.energy.json"
-        resources_file = f"{benchmark}.{language}.{identifier}.resources.json"
+        energy_file = f"{benchmark}.{optimized}.{language}.{identifier}.energy.json"
+        resources_file = (
+            f"{benchmark}.{optimized}.{language}.{identifier}.resources.json"
+        )
 
         energy_path = os.path.join(ROOT, "Results", energy_file)
         resources_path = os.path.join(ROOT, "Results", resources_file)
@@ -150,7 +156,11 @@ class BenchmarkData:
             except:
                 return self.identifier < other.identifier
 
-        return self.language < other.language
+        if self.language != other.language:
+            return self.language < other.language
+    
+        # Unoptimized first
+        return self.optimized > other.optimized
 
     def to_csv_line(self, separator: str = ";") -> str:
         avg_total_memory = (
@@ -158,6 +168,7 @@ class BenchmarkData:
         )
         values = [
             self.benchmark,
+            self.optimized,
             self.identifier,
             self.language,
             f"{self.resources.runtime:.4f}",
@@ -173,6 +184,7 @@ class BenchmarkData:
     def csv_header(separator: str = ";") -> str:
         headers = [
             "Benchmark",
+            "Optimized",
             "Identifier",
             "Language",
             "Runtime (s)",
@@ -195,8 +207,8 @@ if __name__ == "__main__":
 
     data = []
     for energy_file in energy_files:
-        benchmark, language, identifier, _, _ = energy_file.split(".")
-        data.append(BenchmarkData(benchmark, language, identifier))
+        benchmark, optimized, language, identifier, _, _ = energy_file.split(".")
+        data.append(BenchmarkData(benchmark, optimized, language, identifier))
     data = sorted(data)
 
     print(BenchmarkData.csv_header())
