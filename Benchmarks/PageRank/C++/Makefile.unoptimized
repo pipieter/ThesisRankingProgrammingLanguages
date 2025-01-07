@@ -1,3 +1,5 @@
+# Currently a copy of Makefile
+
 -include ../Makefile.defaults
 
 CC := g++

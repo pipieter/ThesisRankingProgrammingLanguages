@@ -1,11 +1,11 @@
 -include ../Makefile.defaults
 
 CC := g++
-CFLAGS := -O3
-OUT := ./unoptimized
+CFLAGS := -O3 -fopenmp
+OUT := ./optimized
 
 compile:
-	$(CC) unoptimized.cpp -o $(OUT) $(CFLAGS)
+	$(CC) optimized.cpp -o $(OUT) $(CFLAGS)
 
 clean:
 	rm $(OUT)
