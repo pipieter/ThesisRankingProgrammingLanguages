@@ -97,35 +97,8 @@ def measure_merge_sort(languages: list[str], verbose: bool) -> None:
             )
 
 
-def measure_setsort_ordered(languages: list[str], verbose: bool) -> None:
-    benchmark = "SetSortOrdered"
-
-    input_dir = os.path.join(ROOT, "Data", "SetSort")
-    files = [int(file) for file in get_files(input_dir)]
-    files = sorted(files)
-
-    for file in files:
-        filepath = os.path.join(input_dir, str(file))
-        out = os.path.join(ROOT, "out.temp")
-
-        args = dict()
-        args["ARGS"] = f'"{filepath}" "{out}" 512000'
-
-        for language in languages:
-            run_benchmark(
-                benchmark=benchmark,
-                benchmark_identifier=str(file),
-                language=language,
-                args=args,
-                timeout=10000,
-                iterations=1,
-                verbose=verbose,
-                clear_cache=True,
-            )
-
-
-def measure_setsort_unordered(languages: list[str], verbose: bool) -> None:
-    benchmark = "SetSortUnordered"
+def measure_setsort(languages: list[str], verbose: bool) -> None:
+    benchmark = "SetSort"
 
     input_dir = os.path.join(ROOT, "Data", "SetSort")
     files = [int(file) for file in get_files(input_dir)]
@@ -234,10 +207,8 @@ if __name__ == "__main__":
     LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
     BENCHMARKS = [
         "PageRank",
-        "PageRankArray",
         "MergeSort",
-        "SetSortOrdered",
-        "SetSortUnordered",
+        "SetSort",
         "IONumber",
         "Fib3",
         # "TriangleCount",
@@ -245,10 +216,8 @@ if __name__ == "__main__":
 
     BENCHMARK_MAPPINGS = {
         "PageRank": measure_pagerank,
-        "PageRankArray": measure_pagerank_array,
         "MergeSort": measure_merge_sort,
-        "SetSortOrdered": measure_setsort_ordered,
-        "SetSortUnordered": measure_setsort_unordered,
+        "SetSort": measure_setsort,
         "IONumber": measure_ionumber,
         "Fib3": measure_fib3,
         # "TriangleCount": measure_triangle_count,
