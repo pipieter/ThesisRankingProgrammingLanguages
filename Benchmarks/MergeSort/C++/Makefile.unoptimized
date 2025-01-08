@@ -1,10 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	g++ merge_sort.cpp -o merge_sort -O3
+	g++ unoptimized.cpp -o unoptimized -O3
 
 clean:
-	rm merge_sort
+	rm unoptimized
 
 measure:
 ifndef JSON
@@ -12,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" ./merge_sort $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" ./unoptimized $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./merge_sort $(ARGS)
+	@echo ./unoptimized $(ARGS)
