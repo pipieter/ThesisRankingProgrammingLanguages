@@ -2,7 +2,7 @@ import json
 import os
 import statistics
 
-from Scripts.measure import get_files
+from Scripts.util.util import get_files
 
 
 ROOT = os.getcwd()

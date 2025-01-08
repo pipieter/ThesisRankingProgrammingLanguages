@@ -39,6 +39,6 @@ The current RAPL utility tool is the one created by Nicolas van Kempen et al. an
 | Fib3              | -   | -   | -    | -    | -      | -    |
 | IONumber          | -   | -   | -    | -    | -      | -    |
 | ExternalMergeSort | -   | -   | -    | -    | -      | -    |
-| MergeSort         | -   | -   | -    | -    | -      | -    |
+| MergeSort         | -   | O   | -    | -    | -      | -    |
 | PageRank          | -   | O   | -    | -    | -      | -    |
 | SetSort           | -   | -   | -    | -    | -      | -    |
