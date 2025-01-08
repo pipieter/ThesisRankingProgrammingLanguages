@@ -74,7 +74,7 @@ def measure_pagerank_array(
             )
 
 
-def measure_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> None:
+def measure_external_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> None:
     benchmark = "ExternalMergeSort"
 
     input_dir = os.path.join(ROOT, "Data", "MergeSort")
@@ -100,6 +100,34 @@ def measure_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> 
                 verbose=verbose,
                 clear_cache=True,
             )
+
+def measure_merge_sort(languages: list[str], optimized: bool, verbose: bool) -> None:
+    benchmark = "MergeSort"
+
+    input_dir = os.path.join(ROOT, "Data", "MergeSort")
+    files = [int(file) for file in get_files(input_dir)]
+    files = sorted(files)
+
+    for file in files:
+        filepath = os.path.join(input_dir, str(file))
+        out = os.path.join(ROOT, "out.temp")
+
+        args = dict()
+        args["ARGS"] = f'"{filepath}" "{out}" 512000'
+
+        for language in languages:
+            run_benchmark(
+                benchmark=benchmark,
+                benchmark_identifier=str(file),
+                language=language,
+                optimized=optimized,
+                args=args,
+                timeout=10000,
+                iterations=1,
+                verbose=verbose,
+                clear_cache=True,
+            )
+
 
 
 def measure_setsort(languages: list[str], optimized: bool, verbose: bool) -> None:
@@ -219,6 +247,7 @@ if __name__ == "__main__":
     BENCHMARKS = [
         "PageRank",
         "ExternalMergeSort",
+        "MergeSort",
         "SetSort",
         "IONumber",
         "Fib3",
@@ -227,7 +256,8 @@ if __name__ == "__main__":
 
     BENCHMARK_MAPPINGS = {
         "PageRank": measure_pagerank,
-        "ExternalMergeSort": measure_merge_sort,
+        "ExternalMergeSort": measure_external_merge_sort,
+        "MergeSort": measure_merge_sort,
         "SetSort": measure_setsort,
         "IONumber": measure_ionumber,
         "Fib3": measure_fib3,

@@ -1,106 +1,64 @@
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 class MergeSort {
-    public static ArrayList<ArrayList<String>> SplitBlocks(String file, int blockSize)
-            throws FileNotFoundException, IOException {
-        int bytesRead = 0;
-
-        ArrayList<ArrayList<String>> blocks = new ArrayList<>();
-        ArrayList<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-
-                lines.add(line);
-                bytesRead += line.length();
-
-                if (bytesRead >= blockSize) {
-                    Collections.sort(lines, Collections.reverseOrder());
-
-                    blocks.add(lines);
-
-                    lines = new ArrayList<String>();
-                    bytesRead = 0;
-                }
-            }
+    public static ArrayList<String> Sort(List<String> entries) {
+        if (entries.size() <= 1) {
+            return new ArrayList<String>(entries);
         }
 
-        // Write remaining
-        if (!lines.isEmpty()) {
-            Collections.sort(lines, Collections.reverseOrder());
-            blocks.add(lines);
-        }
+        int half = entries.size() / 2;
+        ArrayList<String> left = Sort(entries.subList(0, half));
+        ArrayList<String> right = Sort(entries.subList(half, entries.size()));
 
-        return blocks;
+        return Merge(left, right);
     }
 
-    public static ArrayList<String> MergeBlocks(ArrayList<ArrayList<String>> blocks) {
-        ArrayList<String> sorted = new ArrayList<>();
+    public static ArrayList<String> Merge(List<String> a, List<String> b) {
+        ArrayList<String> merged = new ArrayList<>();
+        int ia = 0;
+        int ib = 0;
 
-        while (true) {
-            int block = -1;
-
-            for (int i = 0; i < blocks.size(); i++) {
-                if (blocks.get(i).isEmpty()) {
-                    continue;
-                }
-
-                if (block == -1) {
-                    block = i;
-                } else {
-                    String current = blocks.get(block).get(blocks.get(block).size() - 1);
-                    String next = blocks.get(i).get(blocks.get(i).size() - 1);
-
-                    if (next.compareTo(current) < 0) {
-                        block = i;
-                    }
-                }
+        while (ia < a.size() && ib < b.size()) {
+            if (a.get(ia).compareTo(b.get(ib)) < 0) {
+                merged.add(a.get(ia));
+                ia++;
+            } else {
+                merged.add(b.get(ib));
+                ib++;
             }
-
-            if (block == -1) {
-                break;
-            }
-
-            String value = blocks.get(block).remove(blocks.get(block).size() - 1);
-            sorted.add(value);
         }
 
-        return sorted;
+        merged.addAll(a.subList(ia, a.size()));
+        merged.addAll(b.subList(ib, b.size()));
+
+        return merged;
     }
 
-    public static void main(String[] args) {
-        if (args.length < 3) {
+    public static void main(String[] args) throws IOException {
+        if (args.length < 2) {
             System.err.println("Invalid arguments.");
-            System.err.println("Expected: java [file in] [file out] [block size]");
+            System.err.println("Expected: java [file in] [file out]");
             return;
         }
 
-        String file = args[0];
-        String out = args[1];
-        int blockSize = Integer.parseInt(args[2]);
+        String input = args[0];
+        String output = args[1];
 
-        try {
-            ArrayList<ArrayList<String>> blocks = SplitBlocks(file, blockSize);
-            ArrayList<String> sorted = MergeBlocks(blocks);
+        List<String> lines = Files.readAllLines(new File(input).toPath());
+        List<String> sorted = Sort(lines);
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(out))) {
-                for (String string : sorted) {
-                    writer.write(string);
-                    writer.newLine();
-                }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+            for (String string : sorted) {
+                writer.write(string);
+                writer.newLine();
             }
-        } catch (IOException e) {
         }
     }
 }

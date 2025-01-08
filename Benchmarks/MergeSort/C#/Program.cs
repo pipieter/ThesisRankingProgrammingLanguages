@@ -1,105 +1,65 @@
-﻿namespace MergeSort;
+﻿using System.IO;
+
+namespace MergeSort;
 
 
 public class MergeSorter
 {
-    public static List<List<string>> SplitBlocks(string path, int blockSize)
+    public static List<string> MergeSort(List<string> entries)
     {
-        int bytesRead = 0;
-
-        List<List<string>> blocks = [];
-        List<string> lines = [];
-
-        StreamReader reader = new(new FileStream(path, FileMode.Open));
-
-        string? line = reader.ReadLine();
-        while (line != null)
+        if (entries.Count <= 1)
         {
-            lines.Add(line);
-            bytesRead += line.Length;
-
-            if (bytesRead >= blockSize)
-            {
-                // Sort in reverse order
-                lines.Sort(StringComparer.Ordinal);
-                lines.Reverse();
-
-                blocks.Add(lines);
-
-                lines = [];
-                bytesRead = 0;
-            }
-
-            line = reader.ReadLine();
+            return entries;
         }
 
-        if (lines.Count > 0)
-        {
-            lines.Sort(StringComparer.Ordinal);
-            lines.Reverse();
-            blocks.Add(lines);
-        }
+        int half = entries.Count / 2;
+        List<string> left = MergeSort(entries[0..half]);
+        List<string> right = MergeSort(entries[half..entries.Count]);
 
-        return blocks;
+        return Merge(left, right);
     }
 
-    public static List<string> MergeBlocks(List<List<string>> blocks)
+    public static List<string> Merge(List<string> a, List<string> b)
     {
-        List<string> sorted = [];
+        List<string> merged = [];
+        int ia = 0;
+        int ib = 0;
 
-        while (true)
+        while (ia < a.Count && ib < b.Count)
         {
-            int lowestIndex = -1;
-            for (int i = 0; i < blocks.Count; i++)
+            if (string.CompareOrdinal(a[ia], b[ib]) < 0)
             {
-                if (blocks[i].Count == 0)
-                    continue;
-
-                else if (lowestIndex == -1)
-                    lowestIndex = i;
-
-                else
-                {
-                    string current = blocks[lowestIndex].Last();
-                    string value = blocks[i].Last();
-                    if (string.CompareOrdinal(current, value) > 0)
-                    {
-                        lowestIndex = i;
-                    }
-                }
+                merged.Add(a[ia]);
+                ia += 1;
             }
-
-            if (lowestIndex == -1)
-                break;
-
-            string lowest = blocks[lowestIndex].Last();
-            blocks[lowestIndex].RemoveAt(blocks[lowestIndex].Count - 1);
-            sorted.Add(lowest);
+            else
+            {
+                merged.Add(b[ib]);
+                ib += 1;
+            }
         }
 
-        return sorted;
+        merged.AddRange(a[ia..a.Count]);
+        merged.AddRange(b[ib..b.Count]);
+
+        return merged;
     }
 
 
     public static void Main(string[] args)
     {
-        if (args.Length < 3)
+        if (args.Length < 2)
         {
-            Console.Error.WriteLine("Invalid arguments. Expected three arguments");
+            Console.Error.WriteLine("Usage: program [input] [output]");
             return;
         }
 
-        string file = args[0];
-        string outFile = args[1];
-        int blockSize = int.Parse(args[2]);
+        string input = args[0];
+        string output = args[1];
 
-        var blocks = SplitBlocks(file, blockSize);
-        var sorted = MergeBlocks(blocks);
+        List<string> lines = [.. File.ReadAllLines(input)];
+        List<string> sorted = MergeSort(lines);
 
-        using StreamWriter writer = new(outFile);
-        foreach (string line in sorted)
-        {
-            writer.WriteLine(line);
-        }
+        File.WriteAllLines(output, sorted);
     }
 }

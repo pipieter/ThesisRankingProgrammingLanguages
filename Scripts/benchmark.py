@@ -127,7 +127,7 @@ def run_benchmark(
     args["JSON"] = energy_file_path
 
     description = (
-        f"{benchmark}::{optimizedStr}::{benchmark_identifier}::{language}".ljust(32)
+        f"{benchmark}::{optimizedStr}::{benchmark_identifier}::{language}".ljust(40)
     )
     for _ in track(range(iterations), description=description):
         try:

@@ -1,9 +1,7 @@
 -include ../Makefile.defaults
 
 compile:
-	dotnet new console -o build -n build --force
-	cp Program.cs build/Program.cs
-	dotnet build build/ -c Release --no-incremental
+	dotnet build -o build/unoptimized/ -c Release --no-incremental
 
 clean:
 	dotnet clean
@@ -14,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" dotnet run -c Release --project build/ --no-build -- $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" build/unoptimized/merge-sort $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo dotnet run -c Release --project build/ --no-build -- $(ARGS)
+	@echo build/unoptimized/merge-sort $(ARGS)

@@ -2,72 +2,46 @@ import sys
 from typing import List
 
 
-def split_blocks(path: str, block_size: str) -> List[List[str]]:
-    blocks = []
-    lines = []
+def merge_sort(entries: List[str]) -> List[str]:
+    if len(entries) <= 1:
+        return entries
 
-    reader = open(path, "r")
-    bytes_read = 0
+    half = len(entries) // 2
+    left = merge_sort(entries[:half])
+    right = merge_sort(entries[half:])
 
-    while True:
-        line = reader.readline()
-        if line == "":
-            break
-
-        lines.append(line)
-        bytes_read += len(line)
-
-        if bytes_read >= block_size:
-            lines.sort(reverse=True)
-            blocks.append(lines)
-
-            lines = []
-            bytes_read = 0
-
-    if len(lines) > 0:
-        lines.sort(reverse=True)
-        blocks.append(lines)
-
-    return blocks
+    return merge(left, right)
 
 
-def merge_blocks(blocks: List[List[str]]) -> List[str]:
-    sorted = []
+def merge(a: List[str], b: List[str]) -> List[str]:
+    merged = []
+    ia = 0
+    ib = 0
 
-    while True:
-        block = -1
+    while ia < len(a) and ib < len(b):
+        if a[ia] < b[ib]:
+            merged.append(a[ia])
+            ia += 1
+        else:
+            merged.append(b[ib])
+            ib += 1
 
-        for i in range(len(blocks)):
-            if len(blocks[i]) == 0:
-                continue
+    merged.extend(a[ia:])
+    merged.extend(b[ib:])
 
-            if block == -1:
-                block = i
-            else:
-                current = blocks[block][-1]
-                next = blocks[i][-1]
-
-                if next < current:
-                    block = i
-
-        if block == -1:
-            break
-
-        value = blocks[block].pop()
-        sorted.append(value)
-
-    return sorted
+    return merged
 
 
 if __name__ == "__main__":
     args = sys.argv
 
-    file = args[1]
-    out = args[2]
-    block_size = int(args[3])
+    input = args[1]
+    output = args[2]
 
-    blocks = split_blocks(file, block_size)
-    sorted = merge_blocks(blocks)
+    with open(input, "r") as file:
+        lines = file.readlines()
 
-    with open(out, "w") as file:
+    sorted = merge_sort(lines)
+
+    with open(output, "w") as file:
         file.writelines(sorted)
