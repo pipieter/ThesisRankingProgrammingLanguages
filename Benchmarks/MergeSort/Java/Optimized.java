@@ -6,7 +6,40 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 public class Optimized {
-    public static void Sort(String[] entries) {
+    static final int ConcurrentThreshold = 10_000;
+
+    public static void SortParallel(String[] entries)  {
+        if (entries.length <= 1) {
+            return;
+        }
+
+        if (entries.length < ConcurrentThreshold) {
+            SortConcurrent(entries);
+            return;
+        }
+        int half = entries.length / 2;
+
+        String[] left = Arrays.copyOfRange(entries, 0, half);
+        String[] right = Arrays.copyOfRange(entries, half, entries.length);
+
+        Thread leftSorter = new Thread(new Runnable() {
+            public void run() {
+                SortParallel(left);
+            }
+        });
+        leftSorter.start();
+        SortParallel(right);
+        try {
+            leftSorter.join();
+        } catch (InterruptedException e) {
+            System.err.println("Could not finish SortParallel on left");
+            System.exit(1);
+        }
+
+        Merge(left, right, entries);
+    }
+
+    public static void SortConcurrent(String[] entries) {
         if ((entries.length) <= 1) {
             return;
         }
@@ -16,8 +49,8 @@ public class Optimized {
         String[] left = Arrays.copyOfRange(entries, 0, half);
         String[] right = Arrays.copyOfRange(entries, half, entries.length);
 
-        Sort(left);
-        Sort(right);
+        SortConcurrent(left);
+        SortConcurrent(right);
 
         Merge(left, right, entries);
     }
@@ -54,7 +87,7 @@ public class Optimized {
         String output = args[1];
 
         String[] lines = Files.readAllLines(new File(input).toPath()).toArray(String[]::new);
-        Sort(lines);
+        SortParallel(lines);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
             for (String string : lines) {
