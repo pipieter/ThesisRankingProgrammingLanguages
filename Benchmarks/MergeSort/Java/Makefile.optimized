@@ -1,10 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	javac -d . MergeSort.java
+	javac -d . Optimized.java
 
 clean:
-	rm MergeSort
+	rm Optimized.class
 
 measure:
 ifndef JSON
@@ -12,10 +12,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" java MergeSort $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" java Optimized $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo java MergeSort $(ARGS)
+	@echo java Optimized $(ARGS)

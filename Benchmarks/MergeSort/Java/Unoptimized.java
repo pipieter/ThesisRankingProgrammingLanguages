@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-class MergeSort {
+class Unoptimized {
     public static ArrayList<String> Sort(List<String> entries) {
         if (entries.size() <= 1) {
             return new ArrayList<String>(entries);
