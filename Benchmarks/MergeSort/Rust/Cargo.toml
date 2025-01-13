@@ -4,7 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "merge-sort"
-path = "merge-sort.rs"
+name = "optimized"
+path = "optimized.rs"
+
+
+[[bin]]
+name = "unoptimized"
+path = "unoptimized.rs"
 
 [dependencies]
