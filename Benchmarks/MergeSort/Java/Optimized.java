@@ -3,49 +3,44 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 public class Optimized {
-    public static String[] Sort(String[] entries) {
-        if (entries.length <= 1) {
-            return entries;
+    public static void Sort(String[] entries) {
+        if ((entries.length) <= 1) {
+            return;
         }
 
         int half = entries.length / 2;
 
-        String[] left = new String[half];
-        String[] right = new String[entries.length - half];
+        String[] left = Arrays.copyOfRange(entries, 0, half);
+        String[] right = Arrays.copyOfRange(entries, half, entries.length);
 
-        System.arraycopy(entries, 0, left, 0, half);
-        System.arraycopy(entries, half, right, 0, entries.length - half);
+        Sort(left);
+        Sort(right);
 
-        String[] leftSorted = Sort(left);
-        String[] rightSorted = Sort(right);
-
-        return Merge(leftSorted, rightSorted);
+        Merge(left, right, entries);
     }
 
-    public static String[] Merge(String[] a, String[] b) {
-        String[] merged = new String[a.length + b.length];
+    public static void Merge(String[] a, String[] b, String[] target) {
         int i = 0;
         int ia = 0;
         int ib = 0;
 
         while (ia < a.length && ib < b.length) {
             if (a[ia].compareTo(b[ib]) < 0) {
-                merged[i] = a[ia];
+                target[i] = a[ia];
                 ia++;
             } else {
-                merged[i] = b[ib];
+                target[i] = b[ib];
                 ib++;
             }
             i++;
         }
 
-        System.arraycopy(a, ia, merged, i, a.length - ia);
+        System.arraycopy(a, ia, target, i, a.length - ia);
         i += a.length - ia;
-        System.arraycopy(b, ib, merged, i, b.length - ib);
-
-        return merged;
+        System.arraycopy(b, ib, target, i, b.length - ib);
     }
 
     public static void main(String[] args) throws IOException {
@@ -59,10 +54,10 @@ public class Optimized {
         String output = args[1];
 
         String[] lines = Files.readAllLines(new File(input).toPath()).toArray(String[]::new);
-        String[] sorted = Sort(lines);
+        Sort(lines);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
-            for (String string : sorted) {
+            for (String string : lines) {
                 writer.write(string);
                 writer.newLine();
             }
