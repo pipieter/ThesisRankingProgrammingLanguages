@@ -39,7 +39,6 @@ class Graph {
 
                     this.outgoing.get(a).add(b);
                     this.incoming.get(b).add(a);
-
                 }
 
                 line = reader.readLine();
@@ -51,10 +50,9 @@ class Graph {
 class PageRank {
 
     public static float PageRank_single(int v, Graph graph, float[] ranks, float damping) {
-        float rank = (1 - damping) / graph.nvertices;
-
+        float rank = (1f - damping) / (float) graph.nvertices;
         for (int u : graph.incoming.get(v)) {
-            rank += damping * ranks[u] / graph.outgoing.get(v).size();
+            rank += damping * ranks[u] / (float) graph.outgoing.get(u).size();
         }
 
         return rank;
@@ -65,11 +63,11 @@ class PageRank {
         float[] newRanks = new float[graph.nvertices];
 
         for (int v = 0; v < graph.nvertices; v++) {
-            ranks[v] = 1f / graph.nvertices;
-            newRanks[v] = 1f / graph.nvertices;
+            ranks[v] = 1f / (float) graph.nvertices;
+            newRanks[v] = 1f / (float) graph.nvertices;
         }
 
-        float change = epsilon + 1;
+        float change = epsilon + 1f;
         while (change > epsilon) {
             for (int v = 0; v < graph.nvertices; v++) {
                 newRanks[v] = PageRank_single(v, graph, ranks, damping);
