@@ -45,12 +45,12 @@ def compile(benchmark: str, language: str, optimized: bool, verbose: bool) -> bo
 
 if __name__ == "__main__":
     benchmarks = [
-        #"PageRank",
-        #"ExternalMergeSort",
+        "PageRank",
+        "ExternalMergeSort",
         "MergeSort",
-        #"SetSort",
-        #"IONumber",
-        #"Fib3",
+        "SetSort",
+        "IONumber",
+        "Fib3",
         # "TriangleCount",
     ]
     languages = ["C#", "C++", "Java", "PyPy", "Python", "Rust"]

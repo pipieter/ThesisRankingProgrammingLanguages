@@ -1,4 +1,6 @@
-﻿class Graph
+﻿namespace PageRank.Unoptimized;
+
+class Graph
 {
     public HashSet<int>[] Outgoing { get; private set; } = [];
     public HashSet<int>[] Incoming { get; private set; } = [];
