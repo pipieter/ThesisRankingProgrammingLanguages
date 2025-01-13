@@ -14,10 +14,10 @@ ifndef JSON
 else ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@../../../RAPL/build/rapl --json "$(JSON)" pypy3 ../Python/merge_sort.py $(ARGS)
+	@../../../RAPL/build/rapl --json "$(JSON)" pypy3 ../Python/unoptimized.py $(ARGS)
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo pypy3 ../Python/merge_sort.py $(ARGS)
+	@echo pypy3 ../Python/unoptimized.py $(ARGS)
