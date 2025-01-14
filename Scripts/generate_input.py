@@ -47,7 +47,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     verbose = args.verbose
 
-    sort_inputs = [1_000, 10_000, 100_000, 1_000_000]
+    sort_inputs = [2**18, 2**19, 2**20, 2**21]
 
     # Graphs are currently created elsewhere
     generate_sort(sort_inputs, verbose)
