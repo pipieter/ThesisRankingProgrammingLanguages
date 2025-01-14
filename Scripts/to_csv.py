@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import statistics
@@ -11,14 +12,25 @@ ROOT = os.getcwd()
 class EnergyData:
     energy: float
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, outliers_percent: float):
         energy_samples = []
+        data = []
         with open(path, "r") as file:
             for line in file.readlines():
-                data = json.loads(line)
-                samples = data["energy_samples"]
-                energy = self._parse_samples(samples)
-                energy_samples.append(energy)
+                datum = json.loads(line)
+                if len(datum["energy_samples"]) == 0:
+                    continue
+                data.append(datum)
+        
+        # Remove outliers
+        outlier = int(outliers_percent * len(data) / 2)
+        data.sort(key=lambda x: x["runtime_ms"])
+        data = data[outlier : -outlier - 1]
+
+        for datum in data:
+            samples = datum["energy_samples"]
+            energy = self._parse_samples(samples)
+            energy_samples.append(energy)
 
         self.energy = 0
         if len(energy_samples) > 0:
@@ -43,37 +55,41 @@ class ResourceData:
     avg_private_memory: float
     avg_cpu: float
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, outliers_percent: float) -> None:
         runtimes = []
         avg_cpus = []
         avg_shared_memories = []
         avg_private_memories = []
 
+        data = []
+
         with open(path, "r") as file:
             for line in file.readlines():
-                data = json.loads(line)
+                datum = json.loads(line)
+                if len(datum["samples"]) > 0:
+                    data.append(datum)
 
-                # Ignore executions without any samples
-                if len(data["samples"]) == 0:
-                    continue
+        # Remove outliers
+        outlier = int(outliers_percent * len(data) / 2)
+        data.sort(key=lambda x: x["total_runtime_ms"])
+        data = data[outlier : -outlier - 1]
 
-                total_runtime = data["total_runtime_ms"] / 1000  # In seconds
-                avg_cpu = data["cpu"]
-                samples = data["samples"]
+        # Parse samples
+        for datum in data:
+            runtime = datum["total_runtime_ms"] / 1000  # In seconds
+            cpu = datum["cpu"]
+            samples = datum["samples"]
+            parsed = self._parse_samples(samples)
 
-                parsed = self._parse_samples(samples)
-                if parsed is None:
-                    continue
+            if samples is None:
+                continue
 
-                (
-                    avg_shared_mem_seconds,
-                    avg_private_mem_seconds,
-                ) = parsed
+            avg_shared_mem, avg_private_mem = parsed
 
-                runtimes.append(total_runtime)
-                avg_cpus.append(avg_cpu)
-                avg_shared_memories.append(avg_shared_mem_seconds)
-                avg_private_memories.append(avg_private_mem_seconds)
+            runtimes.append(runtime)
+            avg_cpus.append(cpu)
+            avg_shared_memories.append(avg_shared_mem)
+            avg_private_memories.append(avg_private_mem)
 
         self.runtime = 0
         self.avg_cpu = 0
@@ -122,7 +138,12 @@ class BenchmarkData:
     resources: ResourceData
 
     def __init__(
-        self, benchmark: str, optimized: str, language: str, identifier: str
+        self,
+        benchmark: str,
+        optimized: str,
+        language: str,
+        identifier: str,
+        outliers_threshold,
     ) -> None:
         self.benchmark = benchmark
         self.optimized = optimized
@@ -137,8 +158,8 @@ class BenchmarkData:
         energy_path = os.path.join(ROOT, "Results", energy_file)
         resources_path = os.path.join(ROOT, "Results", resources_file)
 
-        self.energy = EnergyData(energy_path)
-        self.resources = ResourceData(resources_path)
+        self.energy = EnergyData(energy_path, outliers_threshold)
+        self.resources = ResourceData(resources_path, outliers_threshold)
 
     def __lt__(self, other) -> bool:
         if not isinstance(other, BenchmarkData):
@@ -158,7 +179,7 @@ class BenchmarkData:
 
         if self.language != other.language:
             return self.language < other.language
-    
+
         # Unoptimized first
         return self.optimized > other.optimized
 
@@ -200,6 +221,17 @@ class BenchmarkData:
 if __name__ == "__main__":
     path = os.path.join(ROOT, "Results")
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--outliers",
+        type=float,
+        help="Threshold for which outliers to remove based on runtime. For example, a value of 0.2 would remove 10% bottom and 10% top outliers",
+        default=0.0,
+    )
+
+    args = parser.parse_args()
+    outliers_threshold = args.outliers
+
     files = get_files(path)
     files = [file for file in files if file.endswith(".json")]
 
@@ -208,7 +240,11 @@ if __name__ == "__main__":
     data = []
     for energy_file in energy_files:
         benchmark, optimized, language, identifier, _, _ = energy_file.split(".")
-        data.append(BenchmarkData(benchmark, optimized, language, identifier))
+        data.append(
+            BenchmarkData(
+                benchmark, optimized, language, identifier, outliers_threshold
+            )
+        )
     data = sorted(data)
 
     print(BenchmarkData.csv_header())
