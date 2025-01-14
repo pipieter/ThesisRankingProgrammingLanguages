@@ -152,6 +152,9 @@ def run_energy_benchmark(
             env=args,
         )
 
+        # Sleep between iterations
+        time.sleep(5)
+
 
 def run_resource_benchmark(
     benchmark: str,
@@ -248,6 +251,8 @@ def run_resource_benchmark(
             json.dump(process_data, file)
             file.write("\n")
 
+        # Sleep between iterations
+        time.sleep(5)
 
 def run_benchmark(
     benchmark: str,
