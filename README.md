@@ -26,7 +26,7 @@ sudo docker cp [CONTAINER_ID]:/root/ranking-languages/Results/. Results/.
 
 # RAPL
 
-The current RAPL utility tool is the one created by Nicolas van Kempen et al. and can be found here: https://github.com/nicovank/Energy-Languages
+The current RAPL utility tool is based on the one created by [Nicolas van Kempen et al](https://github.com/nicovank/Energy-Languages), and can be found here: https://github.com/pipieter/Thesis-RAPL.
 
 # Future notes:
 

@@ -9,34 +9,88 @@ from Scripts.util.util import get_files
 ROOT = os.getcwd()
 
 
-class EnergyData:
+class Data:
+    runtime_ms: float
+
     energy: float
+    avg_shared_memory: float
+    avg_private_memory: float
+    avg_cpu: float
+    cpu_count: int
 
     def __init__(self, path: str, outliers_percent: float):
-        energy_samples = []
+        runtime_values = []
+        energy_values = []
+        avg_shared_memory_values = []
+        avg_private_memory_values = []
+        avg_cpu_values = []
+        cpu_count_values = []
+
         data = []
+
+        # Read json
         with open(path, "r") as file:
             for line in file.readlines():
                 datum = json.loads(line)
+
+                # Only add samples if there:
+                # - There is at least one energy sample
+                # - There is at least one process sample
+                # - The average cpu usage is larger than 0
+
                 if len(datum["energy_samples"]) == 0:
                     continue
+
+                if len(datum["process"]["samples"]) == 0:
+                    continue
+
+                if datum["process"]["avg_cpu"] == 0:
+                    continue
+
                 data.append(datum)
-        
+
         # Remove outliers
         outlier = int(outliers_percent * len(data) / 2)
         data.sort(key=lambda x: x["runtime_ms"])
         data = data[outlier : -outlier - 1]
 
+        # Parse runtimes
         for datum in data:
-            samples = datum["energy_samples"]
-            energy = self._parse_samples(samples)
-            energy_samples.append(energy)
+            runtime_values.append(datum["runtime_ms"])
 
-        self.energy = 0
-        if len(energy_samples) > 0:
-            self.energy = statistics.mean(energy_samples)
+        # Parse energy values
+        for datum in data:
+            energy_values.append(self._parse_energy_samples(datum["energy_samples"]))
 
-    def _parse_samples(self, samples: list[any]) -> float:
+        # Parse process data
+        for datum in data:
+            (
+                avg_shared_memory_value,
+                avg_private_memory_value,
+            ) = self._parse_process_memory_samples(datum["process"]["samples"])
+            cpu_count_value = datum["process"]["cpu_count"]
+            avg_cpu_value = datum["process"]["avg_cpu"]
+
+            avg_shared_memory_values.append(avg_shared_memory_value)
+            avg_private_memory_values.append(avg_private_memory_value)
+            cpu_count_values.append(cpu_count_value)
+            avg_cpu_values.append(avg_cpu_value)
+
+        # Average results
+        self.runtime_ms = self._average(runtime_values)
+        self.energy = self._average(energy_values)
+        self.avg_shared_memory = self._average(avg_shared_memory_values)
+        self.avg_private_memory = self._average(avg_private_memory_values)
+        self.avg_cpu = self._average(avg_cpu_values)
+        self.cpu_count = self._average(cpu_count_values)
+
+    def _average(self, values: list[float]) -> float:
+        if len(values) == 0:
+            return 0.0
+
+        return statistics.mean(values)
+
+    def _parse_energy_samples(self, samples: list[any]) -> float:
         energy = 0
         for sample in samples:
             for subsample in sample["energy"]:
@@ -48,84 +102,20 @@ class EnergyData:
                 )
         return energy
 
-
-class ResourceData:
-    runtime: float
-    avg_shared_memory: float
-    avg_private_memory: float
-    avg_cpu: float
-
-    def __init__(self, path: str, outliers_percent: float) -> None:
-        runtimes = []
-        avg_cpus = []
-        avg_shared_memories = []
-        avg_private_memories = []
-
-        data = []
-
-        with open(path, "r") as file:
-            for line in file.readlines():
-                datum = json.loads(line)
-                if len(datum["samples"]) > 0:
-                    data.append(datum)
-
-        # Remove outliers
-        outlier = int(outliers_percent * len(data) / 2)
-        data.sort(key=lambda x: x["total_runtime_ms"])
-        data = data[outlier : -outlier - 1]
-
-        # Parse samples
-        for datum in data:
-            runtime = datum["total_runtime_ms"] / 1000  # In seconds
-            cpu = datum["cpu"]
-            samples = datum["samples"]
-            parsed = self._parse_samples(samples)
-
-            if samples is None:
-                continue
-
-            avg_shared_mem, avg_private_mem = parsed
-
-            runtimes.append(runtime)
-            avg_cpus.append(cpu)
-            avg_shared_memories.append(avg_shared_mem)
-            avg_private_memories.append(avg_private_mem)
-
-        self.runtime = 0
-        self.avg_cpu = 0
-        self.avg_shared_memory = 0
-        self.avg_private_memory = 0
-
-        if len(runtimes) > 0:
-            self.runtime = statistics.mean(runtimes)
-            self.avg_cpu = statistics.mean(avg_cpus)
-            self.avg_shared_memory = statistics.mean(avg_shared_memories)
-            self.avg_private_memory = statistics.mean(avg_private_memories)
-
-    def _parse_samples(self, samples: list[any]) -> None | tuple[float, float]:
-        if len(samples) == 0:
-            return None
-
-        total_shared_mem_seconds = 0
-        total_private_memory_seconds = 0
-        total_recorded_runtime_seconds = 0
+    def _parse_process_memory_samples(self, samples: list[any]) -> tuple[float, float]:
+        total_duration = 0
+        total_shared_memory = 0
+        total_private_memory = 0
 
         for sample in samples:
-            sample_seconds = sample["runtime_ms"] / 1000
+            total_duration += sample["duration_ms"]
+            total_shared_memory += sample["duration_ms"] * sample["shared_memory"]
+            total_private_memory += sample["duration_ms"] * sample["private_memory"]
 
-            total_shared_mem_seconds += sample["shared_memory"] * sample_seconds
-            total_private_memory_seconds += sample["private_memory"] * sample_seconds
-
-            total_recorded_runtime_seconds += sample_seconds
-
-        avg_shared_mem_seconds = (
-            total_shared_mem_seconds / total_recorded_runtime_seconds
+        return (
+            total_shared_memory / total_duration,
+            total_private_memory / total_duration,
         )
-        avg_private_mem_seconds = (
-            total_private_memory_seconds / total_recorded_runtime_seconds
-        )
-
-        return avg_shared_mem_seconds, avg_private_mem_seconds
 
 
 class BenchmarkData:
@@ -134,8 +124,7 @@ class BenchmarkData:
     language: str
     identifier: str
 
-    energy: EnergyData
-    resources: ResourceData
+    data: Data
 
     def __init__(
         self,
@@ -150,16 +139,10 @@ class BenchmarkData:
         self.language = language
         self.identifier = identifier
 
-        energy_file = f"{benchmark}.{optimized}.{language}.{identifier}.energy.json"
-        resources_file = (
-            f"{benchmark}.{optimized}.{language}.{identifier}.resources.json"
-        )
+        file = f"{benchmark}.{optimized}.{language}.{identifier}.json"
+        path = os.path.join(ROOT, "Results", file)
 
-        energy_path = os.path.join(ROOT, "Results", energy_file)
-        resources_path = os.path.join(ROOT, "Results", resources_file)
-
-        self.energy = EnergyData(energy_path, outliers_threshold)
-        self.resources = ResourceData(resources_path, outliers_threshold)
+        self.data = Data(path, outliers_threshold)
 
     def __lt__(self, other) -> bool:
         if not isinstance(other, BenchmarkData):
@@ -184,20 +167,25 @@ class BenchmarkData:
         return self.optimized > other.optimized
 
     def to_csv_line(self, separator: str = ";") -> str:
-        avg_total_memory = (
-            self.resources.avg_shared_memory + self.resources.avg_private_memory
-        )
+        runtime_s = self.data.runtime_ms / 1000
+        if self.data.cpu_count == 0:
+            avg_cpu_normalized = 0
+        else:
+            avg_cpu_normalized = self.data.avg_cpu / self.data.cpu_count
+
+        avg_total_memory = self.data.avg_shared_memory + self.data.avg_private_memory
+
         values = [
             self.benchmark,
             self.optimized,
             self.identifier,
             self.language,
-            f"{self.resources.runtime:.4f}",
-            f"{self.energy.energy:.4f}",
-            f"{self.resources.avg_cpu:.4f}",
+            f"{runtime_s:.4f}",
+            f"{self.data.energy:.4f}",
+            f"{avg_cpu_normalized:.4f}",
             f"{avg_total_memory:.4f}",
-            f"{self.resources.avg_shared_memory:.4f}",
-            f"{self.resources.avg_private_memory:.4f}",
+            f"{self.data.avg_shared_memory:.4f}",
+            f"{self.data.avg_private_memory:.4f}",
         ]
         return separator.join(values)
 
@@ -235,11 +223,9 @@ if __name__ == "__main__":
     files = get_files(path)
     files = [file for file in files if file.endswith(".json")]
 
-    energy_files = [file for file in files if file.endswith(".energy.json")]
-
     data = []
-    for energy_file in energy_files:
-        benchmark, optimized, language, identifier, _, _ = energy_file.split(".")
+    for file in files:
+        benchmark, optimized, language, identifier, _ = file.split(".")
         data.append(
             BenchmarkData(
                 benchmark, optimized, language, identifier, outliers_threshold
