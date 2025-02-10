@@ -1,14 +1,58 @@
-# Running
+# Cloning
+
+This repository can be pulled with:
 
 ```bash
-sudo modprobe msr
+git clone --recursive
+```
+
+This will include the RAPL tool repository.
+
+# Building
+
+All command blocks are assumed they are first executed in the root directory.
+
+## Generating input
+
+Input files can be generated using
+
+```bash
 sudo python3 -m Scripts.generate_input --verbose
-sudo python3 -m Scripts.build_rapl --verbose
-sudo python3 -m Scripts.build_docker --verbose
+```
+
+This will generate random string files for MergeSort. Graph files are currently generated using an external tool.
+
+## Building RAPL
+
+RAPL makes use of the Intel's model-specific registries (MSR). These need to be enabled for RAPL to work, which requires sudo permissions. Note that the CMake commands also require sudo, to build, as building RAPL requires access to the MSRs.
+
+```bash
+mkdir RAPL/build
+cd RAPL/build
+sudo modprobe msr
+sudo cmake ..
+sudo cmake --build .
+cd ../..
+```
+
+## Building Docker
+
+The Docker can be build using teh following command:
+
+```bash
+cd Docker
+sudo docker build -f Dockerfile --tag thesis ..
+cd ..
+```
+
+# Running
+
+The Docker container can the following command. The `--priviledged` flag is required to drop the caches and to access the MSRs.
+
+```bash
 sudo docker run -it --privileged thesis
 ```
 
-The first command is required as the RAPL uses the MSR registers to measure energy usage. The `--priviledged` flag is required to drop the caches.
 
 Running the last command opens a bash shell inside the Docker container. Inside the container, to run the benchmarks, do:
 
@@ -27,10 +71,6 @@ sudo docker cp [CONTAINER_ID]:/root/ranking-languages/Results/. Results/.
 # RAPL
 
 The current RAPL utility tool is based on the one created by [Nicolas van Kempen et al](https://github.com/nicovank/Energy-Languages), and can be found here: https://github.com/pipieter/Thesis-RAPL.
-
-# Future notes:
-
-- Python 3.13.0 implements an experimental JIT compiler https://www.python.org/downloads/release/python-3130/ap
 
 # To do
 
