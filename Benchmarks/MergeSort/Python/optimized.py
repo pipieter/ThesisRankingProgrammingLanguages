@@ -1,43 +1,67 @@
+import multiprocessing
 import sys
 from typing import List
 
-def merge_sort(entries: List[str]) -> List[str]:
+CONCURRENT_THRESHOLD = 10_000
+
+
+def merge_sort_concurrent(entries: List[str]) -> None:
     if len(entries) <= 1:
-        return entries
+        return
 
     half = len(entries) // 2
-    left = merge_sort(entries[:half])
-    right = merge_sort(entries[half:])
+    left = entries[:half]
+    right = entries[half:]
 
-    return merge(left, right)
+    merge_sort_concurrent(left)
+    merge_sort_concurrent(right)
+
+    merge(left, right, entries)
 
 
-def merge(a: List[str], b: List[str]) -> List[str]:
-    merged = [None] * (len(a) + len(b))
+def merge_sort_parallel(entries: List[str]) -> None:
+    if len(entries) <= CONCURRENT_THRESHOLD:
+        merge_sort_concurrent(entries)
+        return
+
+    half = len(entries) // 2
+    left = entries[:half]
+    right = entries[half:]
+
+    leftProcess = multiprocessing.Process(target=merge_sort_parallel, args=(left))
+    leftProcess.start()
+
+    merge_sort_parallel(right)
+
+    leftProcess.join()
+    leftProcess.close()
+
+    merge(left, right, entries)
+
+
+def merge(a: List[str], b: List[str], target: List[str]) -> None:
     i = 0
     ia = 0
     ib = 0
 
     while ia < len(a) and ib < len(b):
         if a[ia] < b[ib]:
-            merged[i] = a[ia]
+            target[i] = a[ia]
             i += 1
             ia += 1
         else:
-            merged[i] = b[ib]
+            target[i] = b[ib]
             i += 1
             ib += 1
-      
+
     while ia < len(a):
-        merged[i] = a[ia]
+        target[i] = a[ia]
         i += 1
         ia += 1
     while ib < len(b):
-        merged[i] = b[ib]
+        target[i] = b[ib]
         i += 1
         ib += 1
-
-    return merged
 
 
 if __name__ == "__main__":
@@ -49,7 +73,7 @@ if __name__ == "__main__":
     with open(input, "r") as file:
         lines = file.readlines()
 
-    sorted = merge_sort(lines)
+    merge_sort_concurrent(lines)
 
     with open(output, "w") as file:
-        file.writelines(sorted)
+        file.writelines(lines)
