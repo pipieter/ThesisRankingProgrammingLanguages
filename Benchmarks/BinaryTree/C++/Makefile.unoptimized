@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	g++ unoptimized.cpp -o unoptimized -O3
+
+clean:
+	rm unoptimized
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./unoptimized $(ARGS)

@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	cargo build --release
+
+clean:
+	cargo clean
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./target/release/binarytree $(ARGS)

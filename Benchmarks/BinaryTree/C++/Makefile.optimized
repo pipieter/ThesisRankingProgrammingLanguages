@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	g++ optimized.cpp -o optimized -O3
+
+clean:
+	rm optimized
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./optimized $(ARGS)

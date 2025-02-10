@@ -69,3 +69,11 @@ def get_measure_fib3_args() -> list[tuple[str, str]]:
         args.append((str(num), str(num)))
 
     return args
+
+
+def get_measure_binarytree_args() -> list[tuple[str, str]]:
+    args = []
+    for num in [2**24, 2**25, 2**26, 2**27]:
+        args.append((str(num), str(num)))
+
+    return args

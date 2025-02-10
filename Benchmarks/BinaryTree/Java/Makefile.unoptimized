@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	javac -d . BinaryTree.java Node.java
+
+clean:
+	rm MergeSort
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo java BinaryTree $(ARGS)
