@@ -8,14 +8,6 @@ compile:
 clean:
 	@:
 
-measure:
-ifndef JSON
-	$(error No JSON defined.)
-else ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@../../../RAPL/build/rapl --json "$(JSON)" pypy3 ../Python/unoptimized.py $(ARGS)
-
 command:
 ifndef ARGS
 	$(error No ARGS defined.)

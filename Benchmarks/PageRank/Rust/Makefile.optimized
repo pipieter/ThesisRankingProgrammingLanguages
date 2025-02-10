@@ -6,14 +6,6 @@ compile:
 clean:
 	cargo clean
 
-measure:
-ifndef JSON
-	$(error No JSON defined.)
-else ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@../../../RAPL/build/rapl --json "$(JSON)" ./target/release/pagerank $(ARGS)
-
 command:
 ifndef ARGS
 	$(error No ARGS defined.)

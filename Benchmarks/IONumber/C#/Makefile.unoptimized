@@ -8,14 +8,6 @@ compile:
 clean:
 	dotnet clean
 
-measure:
-ifndef JSON
-	$(error No JSON defined.)
-else ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@../../../RAPL/build/rapl --json "$(JSON)" dotnet run -c Release --project build/ --no-build -- $(ARGS)
-
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
