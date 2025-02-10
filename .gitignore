@@ -4,6 +4,3 @@ env
 
 *.temp
 *.exe
-
-# RAPL not included
-RAPL/
