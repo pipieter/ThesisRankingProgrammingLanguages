@@ -30,11 +30,11 @@ fn merge(a: &[String], b: &[String]) -> Vec<String> {
         }
     }
 
-    for i in ia..a.len() {
-        merged.push(a[i].clone());
+    for item in a.iter().skip(ia) {
+        merged.push(item.clone());
     }
-    for i in ib..b.len() {
-        merged.push(b[i].clone());
+    for item in b.iter().skip(ib) {
+        merged.push(item.clone());
     }
 
     merged

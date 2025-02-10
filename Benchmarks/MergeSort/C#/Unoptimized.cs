@@ -1,11 +1,9 @@
-﻿using System.IO;
-
-namespace MergeSort;
+﻿namespace MergeSort.Unoptimized;
 
 
 public class MergeSorter
 {
-    public static List<string> MergeSort(List<string> entries)
+    public static List<string> Sort(List<string> entries)
     {
         if (entries.Count <= 1)
         {
@@ -13,8 +11,8 @@ public class MergeSorter
         }
 
         int half = entries.Count / 2;
-        List<string> left = MergeSort(entries[0..half]);
-        List<string> right = MergeSort(entries[half..entries.Count]);
+        List<string> left = Sort(entries[0..half]);
+        List<string> right = Sort(entries[half..entries.Count]);
 
         return Merge(left, right);
     }
@@ -48,17 +46,11 @@ public class MergeSorter
 
     public static void Main(string[] args)
     {
-        if (args.Length < 2)
-        {
-            Console.Error.WriteLine("Usage: program [input] [output]");
-            return;
-        }
-
         string input = args[0];
         string output = args[1];
 
         List<string> lines = [.. File.ReadAllLines(input)];
-        List<string> sorted = MergeSort(lines);
+        List<string> sorted = Sort(lines);
 
         File.WriteAllLines(output, sorted);
     }
