@@ -1,0 +1,3 @@
+[submodule "RAPL"]
+	path = RAPL
+	url = https://github.com/pipieter/Thesis-RAPL.git
