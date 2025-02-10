@@ -7,7 +7,7 @@ from rich.progress import track
 
 ROOT = os.getcwd()
 
-RAPL_PATH = os.path.abspath("../RAPL/build/rapl")
+RAPL_PATH = os.path.abspath("./RAPL/build/rapl")
 
 
 def clear_caches(level: int = 3):
