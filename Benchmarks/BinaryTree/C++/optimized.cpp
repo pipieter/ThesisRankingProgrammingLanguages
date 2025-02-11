@@ -48,7 +48,7 @@ void count_at_depths(const TreeNode *tree, int depth,
 
 int main(int argc, const char **argv) {
   int nodes = std::atoi(argv[1]);
-  int depth = (int)ceil(log2((double)nodes));
+  int depth = (int)ceil(log2((double)nodes)) + 1;
 
   size_t pool_size = nodes * sizeof(TreeNode);
   std::pmr::monotonic_buffer_resource pool(pool_size);

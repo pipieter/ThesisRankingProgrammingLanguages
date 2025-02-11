@@ -25,7 +25,7 @@ public class BinaryTree {
 
     public static void main(String[] args) {
         int nodes = Integer.parseInt(args[0]);
-        int depth = (int) Math.ceil((double) Math.log(nodes) / (double) Math.log(2.0));
+        int depth = (int) Math.ceil((double) Math.log(nodes) / (double) Math.log(2.0)) + 1;
 
         Node tree = build(nodes);
         int[] counts = new int[depth];

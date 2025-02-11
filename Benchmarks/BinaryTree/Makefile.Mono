@@ -1,0 +1,11 @@
+-include ../Makefile.defaults
+
+compile:
+	mkdir -p ./out/mono
+	mcs ./C#/BinaryTree.cs -out:./out/mono/unoptimized
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo mono ./out/mono/unoptimized $(ARGS)

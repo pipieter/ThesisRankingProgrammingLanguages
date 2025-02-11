@@ -12,15 +12,15 @@ from Scripts.generate_input import verify_dir
 
 
 ARGS_MAP = {
-    "MergeSort": get_measure_merge_sort_args,
-    "IONumber": get_measure_io_number_args,
-    "PageRank": get_measure_pagerank_args,
+    #"MergeSort": get_measure_merge_sort_args,
+    #"IONumber": get_measure_io_number_args,
+    #"PageRank": get_measure_pagerank_args,
     "BinaryTree": get_measure_binarytree_args,
 }
 
 
 if __name__ == "__main__":
-    LANGUAGES = ["C++", "C#", "Java", "Mono", "PyPy", "Python", "Rust"]
+    LANGUAGES = ["GCC", "NET", "OpenJDK", "CPython", "PyPy", "Rust"]
 
     BENCHMARKS = sorted(list(set(ARGS_MAP.keys())))
 
@@ -67,7 +67,13 @@ if __name__ == "__main__":
         "--timeout",
         type=int,
         default=1000,
-        help="The amount of iterations to perform, after warm-up.",
+        help="The maximum amount of allowed execution time.",
+    )
+    parser.add_argument(
+        "--timebetween",
+        type=int,
+        default=5,
+        help="The amount of time between iterations."
     )
     parser.add_argument(
         "--verbose",
@@ -83,6 +89,7 @@ if __name__ == "__main__":
     verbose = args.verbose
     iterations = args.iterations
     warmups = args.warmups
+    time_between = args.timebetween
 
     verify_dir(os.path.join("./Results"))
 
@@ -106,4 +113,5 @@ if __name__ == "__main__":
                         iterations=iterations,
                         verbose=verbose,
                         warmups=warmups,
+                        time_between=time_between
                     )

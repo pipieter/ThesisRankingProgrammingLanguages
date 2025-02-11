@@ -6,10 +6,10 @@ import subprocess
 ROOT = os.getcwd()
 
 
-def compile(benchmark: str, language: str, optimized: bool, verbose: bool) -> bool:
-    print(f"Compiling {benchmark} - {language} (optimized = {optimized})")
+def compile(benchmark: str, language: str, verbose: bool) -> bool:
+    print(f"Compiling {benchmark} - {language}")
 
-    cwd = os.path.join(ROOT, "Benchmarks", benchmark, language)
+    cwd = os.path.join(ROOT, "Benchmarks", benchmark)
     env = os.environ
 
     stdin = subprocess.DEVNULL
@@ -19,10 +19,7 @@ def compile(benchmark: str, language: str, optimized: bool, verbose: bool) -> bo
         stdout = None
         stderr = None
 
-    if optimized:
-        makefile = "Makefile.optimized"
-    else:
-        makefile = "Makefile.unoptimized"
+    makefile = f"Makefile.{language}"
     process = subprocess.run(
         ["make", "-f", makefile, "compile"],
         stdin=stdin,
@@ -46,11 +43,11 @@ def compile(benchmark: str, language: str, optimized: bool, verbose: bool) -> bo
 if __name__ == "__main__":
     benchmarks = [
         "BinaryTree",
-        "PageRank",
-        "MergeSort",
-        "IONumber",
+        # "PageRank",
+        # "MergeSort",
+        # "IONumber",
     ]
-    languages = ["C#", "C++", "Java", "Mono", "PyPy", "Python", "Rust"]
+    languages = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -74,7 +71,6 @@ if __name__ == "__main__":
 
     for benchmark in benchmarks:
         for language in languages:
-            for optimized in [False, True]:
-                result = compile(benchmark, language, optimized, verbose)
-                if not result and not ignore_errors:
-                    exit(1)
+            result = compile(benchmark, language, verbose)
+            if not result and not ignore_errors:
+                exit(1)

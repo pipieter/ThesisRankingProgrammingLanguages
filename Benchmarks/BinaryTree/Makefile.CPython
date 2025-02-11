@@ -1,15 +1,10 @@
 -include ../Makefile.defaults
 
-# PyPy reuses the Python files
-
 compile:
-	@:
-
-clean:
 	@:
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo pypy3 ../Python/binarytree.py $(ARGS)
+	@echo python3 Python/binarytree.py $(ARGS)
