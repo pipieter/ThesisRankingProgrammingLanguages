@@ -20,7 +20,7 @@ ARGS_MAP = {
 
 
 if __name__ == "__main__":
-    LANGUAGES = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
+    LANGUAGES = ["GCC", "Clang", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 
     BENCHMARKS = sorted(list(set(ARGS_MAP.keys())))
 

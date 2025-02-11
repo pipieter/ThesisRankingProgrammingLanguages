@@ -47,7 +47,7 @@ if __name__ == "__main__":
         "MergeSort",
         "IONumber",
     ]
-    languages = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
+    languages = ["GCC", "Clang", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

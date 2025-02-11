@@ -1,0 +1,11 @@
+-include ../Makefile.defaults
+
+compile:
+	mkdir -p ./out/clang
+	clang++ C++/ionumber.cpp -o ./out/clang/ionumber ${CPPFLAGS}
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/clang/ionumber $(ARGS)
