@@ -3,8 +3,6 @@ import os
 
 from Scripts.util.benchmark_args import (
     get_measure_binarytree_args,
-    get_measure_external_merge_sort_args,
-    get_measure_fib3_args,
     get_measure_io_number_args,
     get_measure_merge_sort_args,
     get_measure_pagerank_args,
@@ -15,9 +13,7 @@ from Scripts.generate_input import verify_dir
 
 ARGS_MAP = {
     "MergeSort": get_measure_merge_sort_args,
-    "ExternalMergeSort": get_measure_external_merge_sort_args,
     "IONumber": get_measure_io_number_args,
-    "Fib3": get_measure_fib3_args,
     "PageRank": get_measure_pagerank_args,
     "BinaryTree": get_measure_binarytree_args,
 }

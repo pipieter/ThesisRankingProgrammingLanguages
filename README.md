@@ -53,7 +53,6 @@ The Docker container can the following command. The `--priviledged` flag is requ
 sudo docker run -it --privileged thesis
 ```
 
-
 Running the last command opens a bash shell inside the Docker container. Inside the container, to run the benchmarks, do:
 
 ```bash
@@ -74,11 +73,9 @@ The current RAPL utility tool is based on the one created by [Nicolas van Kempen
 
 # To do
 
-| Benchmark         | C#  | C++ | Java | PyPy | Python | Rust |
-| ----------------- | --- | --- | ---- | ---- | ------ | ---- |
-| Fib3              | -   | -   | -    | -    | -      | -    |
-| IONumber          | -   | -   | -    | -    | -      | -    |
-| ExternalMergeSort | -   | -   | -    | -    | -      | -    |
-| MergeSort         | -   | O   | -    | -    | -      | -    |
-| PageRank          | -   | O   | -    | -    | -      | -    |
-| SetSort           | -   | -   | -    | -    | -      | -    |
+| Benchmark    | C#  | C++ | Java | Python | Rust |
+| ------------ | --- | --- | ---- | ------ | ---- |
+| Binary trees | -   | O   | -    | -      | -    |
+| IONumber     | -   | -   | -    | -      | -    |
+| MergeSort    | -   | O   | -    | -      | -    |
+| PageRank     | -   | O   | -    | -      | -    |
