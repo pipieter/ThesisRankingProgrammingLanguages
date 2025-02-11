@@ -45,7 +45,7 @@ if __name__ == "__main__":
         "BinaryTree",
         # "PageRank",
         # "MergeSort",
-        # "IONumber",
+        "IONumber",
     ]
     languages = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 

@@ -1,0 +1,10 @@
+-include ../Makefile.defaults
+
+compile:
+	dotnet build C#/csharp.csproj -o ./out/dotnet/unoptimized -c Release --no-incremental
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/dotnet/unoptimized/csharp $(ARGS)

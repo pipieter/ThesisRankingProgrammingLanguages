@@ -12,15 +12,15 @@ from Scripts.generate_input import verify_dir
 
 
 ARGS_MAP = {
-    #"MergeSort": get_measure_merge_sort_args,
-    #"IONumber": get_measure_io_number_args,
-    #"PageRank": get_measure_pagerank_args,
+    # "MergeSort": get_measure_merge_sort_args,
+    "IONumber": get_measure_io_number_args,
+    # "PageRank": get_measure_pagerank_args,
     "BinaryTree": get_measure_binarytree_args,
 }
 
 
 if __name__ == "__main__":
-    LANGUAGES = ["GCC", "NET", "OpenJDK", "CPython", "PyPy", "Rust"]
+    LANGUAGES = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 
     BENCHMARKS = sorted(list(set(ARGS_MAP.keys())))
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         "--timebetween",
         type=int,
         default=5,
-        help="The amount of time between iterations."
+        help="The amount of time between iterations.",
     )
     parser.add_argument(
         "--verbose",
@@ -113,5 +113,5 @@ if __name__ == "__main__":
                         iterations=iterations,
                         verbose=verbose,
                         warmups=warmups,
-                        time_between=time_between
+                        time_between=time_between,
                     )

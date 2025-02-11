@@ -1,13 +1,10 @@
 -include ../Makefile.defaults
 
 compile:
-	mcs ../C#/Program.cs -o IONumber
-
-clean:
-	rm -r IONumber
+	@:
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo mono IONumber $(ARGS)
+	@echo python3 Python/ionumber.py $(ARGS)
