@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	mcs ../C#/BinaryTree.cs -o BinaryTree
+
+clean:
+	rm -r BinaryTree
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo mono BinaryTree $(ARGS)

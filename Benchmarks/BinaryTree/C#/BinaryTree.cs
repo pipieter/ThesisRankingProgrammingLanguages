@@ -1,9 +1,9 @@
 public class Node
 {
-    public Node? left;
-    public Node? right;
+    public Node left;
+    public Node right;
 
-    public Node(Node? left, Node? right)
+    public Node(Node left, Node right)
     {
         this.left = left;
         this.right = right;
@@ -12,7 +12,7 @@ public class Node
 
 public static class BinaryTree
 {
-    public static Node? Build(int nodes)
+    public static Node Build(int nodes)
     {
         if (nodes == 0)
         {
@@ -22,13 +22,13 @@ public static class BinaryTree
         int nodesLeft = nodes / 2;
         int nodesRight = nodes - nodesLeft - 1;
 
-        Node? left = Build(nodesLeft);
-        Node? right = Build(nodesRight);
+        Node left = Build(nodesLeft);
+        Node right = Build(nodesRight);
 
         return new Node(left, right);
     }
 
-    public static void Count(Node? node, int depth, int[] counts)
+    public static void Count(Node node, int depth, int[] counts)
     {
         if (node == null)
             return;
@@ -41,9 +41,9 @@ public static class BinaryTree
     public static void Main(string[] args)
     {
         int nodes = int.Parse(args[0]);
-        int depth = (int)Math.Ceiling(Math.Log2(nodes));
+        int depth = (int)System.Math.Ceiling(System.Math.Log((double)nodes) / System.Math.Log(2.0));
 
-        Node? node = Build(nodes);
+        Node node = Build(nodes);
         int[] counts = new int[depth];
 
         Count(node, 0, counts);

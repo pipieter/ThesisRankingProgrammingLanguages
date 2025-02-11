@@ -1,0 +1,13 @@
+-include ../Makefile.defaults
+
+compile:
+	mcs ../C#/Unoptimized.cs -o Unoptimized
+
+clean:
+	rm -r Unoptimized
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo mono Unoptimized $(ARGS)

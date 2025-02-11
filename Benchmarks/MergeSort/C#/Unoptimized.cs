@@ -1,9 +1,8 @@
-﻿namespace MergeSort.Unoptimized;
-
+﻿using System.Linq;
 
 public class MergeSorter
 {
-    public static List<string> Sort(List<string> entries)
+    public static System.Collections.Generic.List<string> Sort(System.Collections.Generic.List<string> entries)
     {
         if (entries.Count <= 1)
         {
@@ -11,15 +10,15 @@ public class MergeSorter
         }
 
         int half = entries.Count / 2;
-        List<string> left = Sort(entries[0..half]);
-        List<string> right = Sort(entries[half..entries.Count]);
+        System.Collections.Generic.List<string> left = Sort(entries.Take(half).ToList<string>());
+        System.Collections.Generic.List<string> right = Sort(entries.Skip(half).Take(entries.Count - half).ToList<string>());
 
         return Merge(left, right);
     }
 
-    public static List<string> Merge(List<string> a, List<string> b)
+    public static System.Collections.Generic.List<string> Merge(System.Collections.Generic.List<string> a, System.Collections.Generic.List<string> b)
     {
-        List<string> merged = [];
+        System.Collections.Generic.List<string> merged = new System.Collections.Generic.List<string>();
         int ia = 0;
         int ib = 0;
 
@@ -37,8 +36,8 @@ public class MergeSorter
             }
         }
 
-        merged.AddRange(a[ia..a.Count]);
-        merged.AddRange(b[ib..b.Count]);
+        merged.AddRange(a.Skip(ia).Take(a.Count - ia));
+        merged.AddRange(b.Skip(ib).Take(b.Count - ib));
 
         return merged;
     }
@@ -49,9 +48,9 @@ public class MergeSorter
         string input = args[0];
         string output = args[1];
 
-        List<string> lines = [.. File.ReadAllLines(input)];
-        List<string> sorted = Sort(lines);
+        System.Collections.Generic.List<string> lines = System.IO.File.ReadAllLines(input).ToList<string>();
+        System.Collections.Generic.List<string> sorted = Sort(lines);
 
-        File.WriteAllLines(output, sorted);
+        System.IO.File.WriteAllLines(output, sorted);
     }
 }

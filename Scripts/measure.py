@@ -20,7 +20,7 @@ ARGS_MAP = {
 
 
 if __name__ == "__main__":
-    LANGUAGES = ["C++", "C#", "Java", "PyPy", "Python", "Rust"]
+    LANGUAGES = ["C++", "C#", "Java", "Mono", "PyPy", "Python", "Rust"]
 
     BENCHMARKS = sorted(list(set(ARGS_MAP.keys())))
 

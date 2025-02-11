@@ -1,5 +1,4 @@
-namespace MergeSort.Unoptimized;
-
+using System.Linq;
 
 public class MergeSorter
 {
@@ -11,8 +10,8 @@ public class MergeSorter
             return;
 
         int half = entries.Length / 2;
-        string[] left = [.. entries.Take(half)];
-        string[] right = [.. entries.Skip(half)];
+        string[] left = entries.Take(half).ToArray<string>();
+        string[] right = entries.Skip(half).ToArray<string>();
 
         SortConcurrent(left);
         SortConcurrent(right);
@@ -30,10 +29,10 @@ public class MergeSorter
 
 
         int half = entries.Length / 2;
-        string[] left = [.. entries.Take(half)];
-        string[] right = [.. entries.Skip(half)];
+        string[] left = entries.Take(half).ToArray<string>();
+        string[] right = entries.Skip(half).ToArray<string>();
 
-        Thread leftThread = new(() => { SortParallel(left); });
+        System.Threading.Thread leftThread = new System.Threading.Thread(() => { SortParallel(left); });
         leftThread.Start();
 
         SortParallel(right);
@@ -63,9 +62,9 @@ public class MergeSorter
             i += 1;
         }
 
-        Array.Copy(a, ia, target, i, a.Length - ia);
+        System.Array.Copy(a, ia, target, i, a.Length - ia);
         i += a.Length - ia;
-        Array.Copy(b, ib, target, i, b.Length - ib);
+        System.Array.Copy(b, ib, target, i, b.Length - ib);
     }
 
 
@@ -74,9 +73,9 @@ public class MergeSorter
         string input = args[0];
         string output = args[1];
 
-        string[] lines = [.. File.ReadAllLines(input)];
+        string[] lines = System.IO.File.ReadAllLines(input);
         SortParallel(lines);
 
-        File.WriteAllLines(output, lines);
+        System.IO.File.WriteAllLines(output, lines);
     }
 }

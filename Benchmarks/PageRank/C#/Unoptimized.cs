@@ -1,44 +1,43 @@
-﻿namespace PageRank.Unoptimized;
-
-class Graph
+﻿class Graph
 {
-    public HashSet<int>[] Outgoing { get; private set; } = [];
-    public HashSet<int>[] Incoming { get; private set; } = [];
-    public int NVertices { get; private set; } = 0;
+    public System.Collections.Generic.HashSet<int>[] Outgoing;
+    public System.Collections.Generic.HashSet<int>[] Incoming;
+    public int NVertices = 0;
 
     public Graph(string path)
     {
-        using StreamReader reader = new(path);
-
-        string? line = reader.ReadLine();
-        while (line != null)
+        using (System.IO.StreamReader reader = new System.IO.StreamReader(path))
         {
-            if (line.StartsWith('p'))
+            string line = reader.ReadLine();
+            while (line != null)
             {
-                string[] values = line.Split(' ');
-                int vertices = int.Parse(values[2]);
-
-                NVertices = vertices;
-                Outgoing = new HashSet<int>[vertices];
-                Incoming = new HashSet<int>[vertices];
-
-                for (int i = 0; i < vertices; i++)
+                if (line.StartsWith('p'))
                 {
-                    Outgoing[i] = [];
-                    Incoming[i] = [];
+                    string[] values = line.Split(' ');
+                    int vertices = int.Parse(values[2]);
+
+                    NVertices = vertices;
+                    Outgoing = new System.Collections.Generic.HashSet<int>[vertices];
+                    Incoming = new System.Collections.Generic.HashSet<int>[vertices];
+
+                    for (int i = 0; i < vertices; i++)
+                    {
+                        Outgoing[i] = new System.Collections.Generic.HashSet<int>();
+                        Incoming[i] = new System.Collections.Generic.HashSet<int>();
+                    }
                 }
-            }
-            else if (line.StartsWith('a') || line.StartsWith('e'))
-            {
-                string[] values = line.Split(' ');
-                int a = int.Parse(values[1]);
-                int b = int.Parse(values[2]);
+                else if (line.StartsWith('a') || line.StartsWith('e'))
+                {
+                    string[] values = line.Split(' ');
+                    int a = int.Parse(values[1]);
+                    int b = int.Parse(values[2]);
 
-                Outgoing[a].Add(b);
-                Incoming[b].Add(a);
-            }
+                    Outgoing[a].Add(b);
+                    Incoming[b].Add(a);
+                }
 
-            line = reader.ReadLine();
+                line = reader.ReadLine();
+            }
         }
     }
 }
@@ -77,7 +76,7 @@ class PageRanker
             // Recalculate change
             change = 0f;
             for (int v = 0; v < graph.NVertices; v++)
-                change += MathF.Abs(ranks[v] - newRanks[v]);
+                change += System.MathF.Abs(ranks[v] - newRanks[v]);
 
             for (int v = 0; v < graph.NVertices; v++)
                 ranks[v] = newRanks[v];
@@ -94,9 +93,10 @@ class PageRanker
         var graph = new Graph(file);
         var ranks = PageRank(graph, 0.85f);
 
-        using StreamWriter writer = new(outFile);
-
-        for (int v = 0; v < graph.NVertices; v++)
-            writer.WriteLine($"{v} {ranks[v]}");
+        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(outFile))
+        {
+            for (int v = 0; v < graph.NVertices; v++)
+                writer.WriteLine($"{v} {ranks[v]}");
+        }
     }
 }

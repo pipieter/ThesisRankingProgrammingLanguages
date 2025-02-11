@@ -4,7 +4,7 @@
     {
         try
         {
-            string contents = File.ReadAllText(path);
+            string contents = System.IO.File.ReadAllText(path);
             return int.Parse(contents);
         }
         catch
@@ -15,12 +15,12 @@
 
     public static void WriteValue(string path, int value)
     {
-        File.WriteAllText(path, value.ToString());
+        System.IO.File.WriteAllText(path, value.ToString());
     }
 
     public static void Run(int count, string path)
     {
-        File.Delete(path);
+        System.IO.File.Delete(path);
 
         int value = 0;
         while (value != count)
