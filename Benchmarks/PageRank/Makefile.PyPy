@@ -3,11 +3,8 @@
 compile:
 	@:
 
-clean:
-	@:
-
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo python3 pagerank.py $(ARGS)
+	@echo pypy3 Python/pagerank.py $(ARGS)

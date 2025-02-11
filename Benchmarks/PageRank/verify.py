@@ -8,29 +8,49 @@ Verifies the correctness of the MergeSort algorithm. Python is used as a baselin
 """
 
 
-def get_contents(language: str, optimized: bool, path: str) -> dict[int, float]:
-    out = os.path.abspath("./out.temp")
-    cwd = os.path.abspath(f"./{language}")
-
-    if os.path.isfile(out):
-        os.remove(out)
+def get_command(language: str, optimized: bool, args: dict):
+    cwd = os.path.abspath(f".")
+    makefile = os.path.join(cwd, f"Makefile.{language}")
 
     if optimized:
-        makefile = cwd + "/Makefile.optimized"
-    else:
-        makefile = cwd + "/Makefile.unoptimized"
-
-    args = os.environ
-    args["ARGS"] = f"{path} {out} 2048"
+        result = subprocess.run(
+            ["make", "-f", makefile, "command-optimized"],
+            shell=False,
+            cwd=cwd,
+            env=args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        # command-optimized not found, return None
+        if result.returncode == 2:
+            return None
+        return result.stdout.decode("utf-8").strip().split(" ")
 
     # Get command
     command = subprocess.check_output(
         ["make", "-f", makefile, "command"],
         shell=False,
         cwd=cwd,
-        env=os.environ,
+        env=args,
     ).decode("utf-8")
     command = command.strip().split(" ")
+    return command
+
+
+def get_contents(language: str, optimized: bool, path: str) -> dict[int, float]:
+    out = os.path.abspath("./out.temp")
+    cwd = os.path.abspath(f".")
+
+    if os.path.isfile(out):
+        os.remove(out)
+
+    args = os.environ
+    args["ARGS"] = f"{path} {out} 2048"
+
+    command = get_command(language, optimized, args)
+
+    if command is None:
+        return None
 
     # Execute command
     subprocess.run(
@@ -69,12 +89,15 @@ if __name__ == "__main__":
 
     # Use Python as baseline
     print("Reading baseline")
-    baseline = get_contents("Python", False, path)
+    baseline = get_contents("CPython", False, path)
 
-    for language in ["C#", "C++", "Java", "PyPy", "Python", "Rust"]:
+    for language in ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]:
         for optimized in [False, True]:
             print(f"Attempting to verify {language} (optimized = {optimized})")
             contents = get_contents(language, optimized, path)
+
+            if contents is None:
+                continue
 
             if baseline.keys() != contents.keys():
                 print(

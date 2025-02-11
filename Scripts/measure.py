@@ -14,7 +14,7 @@ from Scripts.generate_input import verify_dir
 ARGS_MAP = {
     "MergeSort": get_measure_merge_sort_args,
     "IONumber": get_measure_io_number_args,
-    # "PageRank": get_measure_pagerank_args,
+    "PageRank": get_measure_pagerank_args,
     "BinaryTree": get_measure_binarytree_args,
 }
 
