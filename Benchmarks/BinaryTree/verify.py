@@ -2,40 +2,15 @@ import argparse
 import os
 import os.path
 import subprocess
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from benchmark import get_command
+
 
 """
 Verifies the correctness of the Binary Tree program. Python is used as a baseline to verify results.
 """
-
-
-def get_command(language: str, optimized: bool, args: dict):
-    cwd = os.path.abspath(f".")
-    makefile = os.path.join(cwd, f"Makefile.{language}")
-
-
-    if optimized:
-        result = subprocess.run(
-            ["make", "-f", makefile, "command-optimized"],
-            shell=False,
-            cwd=cwd,
-            env=args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-        )
-        # command-optimized not found, return None
-        if result.returncode == 2:
-            return None
-        return result.stdout.decode("utf-8").strip().split(" ")
-
-    # Get command
-    command = subprocess.check_output(
-        ["make", "-f", makefile, "command"],
-        shell=False,
-        cwd=cwd,
-        env=args,
-    ).decode("utf-8")
-    command = command.strip().split(" ")
-    return command
 
 
 def get_output(language: str, optimized: bool, size: int) -> dict[int, float]:
@@ -44,7 +19,7 @@ def get_output(language: str, optimized: bool, size: int) -> dict[int, float]:
     args = os.environ
     args["ARGS"] = str(size)
 
-    command = get_command(language, optimized, args)
+    command = get_command(language, optimized, cwd, args)
     if command is None:
         return None
     # Execute command
