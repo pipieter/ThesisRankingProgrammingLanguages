@@ -1,0 +1,17 @@
+-include ../Makefile.defaults
+
+compile:
+	cargo build --release --target-dir out/rust --manifest-path Rust/Cargo.toml
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/rust/release/unoptimized $(ARGS)
+
+
+command-optimized:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/rust/release/optimized $(ARGS)

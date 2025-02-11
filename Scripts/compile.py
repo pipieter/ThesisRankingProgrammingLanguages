@@ -44,7 +44,7 @@ if __name__ == "__main__":
     benchmarks = [
         "BinaryTree",
         # "PageRank",
-        # "MergeSort",
+        "MergeSort",
         "IONumber",
     ]
     languages = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]

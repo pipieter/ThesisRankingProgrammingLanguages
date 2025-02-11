@@ -1,0 +1,17 @@
+-include ../Makefile.defaults
+
+compile:
+	javac -d out/openjdk/unoptimized Java/Unoptimized.java
+	javac -d out/openjdk/optimized   Java/Optimized.java
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo java -classpath ./out/openjdk/unoptimized Unoptimized $(ARGS)
+
+command-optimized:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo java -classpath ./out/openjdk/optimized Optimized $(ARGS)
