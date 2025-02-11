@@ -48,7 +48,16 @@ if __name__ == "__main__":
     print("Reading baseline")
     baseline = get_output("GCC", False, nodes)
 
-    for language in ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]:
+    for language in [
+        "GCC",
+        "Clang",
+        "OpenJDK",
+        "NET",
+        "Mono",
+        "CPython",
+        "PyPy",
+        "Rust",
+    ]:
         for optimized in [False, True]:
             print(f"Attempting to verify {language} (optimized = {optimized})")
             output = get_output(language, optimized, nodes)

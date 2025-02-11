@@ -66,7 +66,16 @@ if __name__ == "__main__":
     print("Reading baseline")
     baseline = get_contents("CPython", False, path)
 
-    for language in ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]:
+    for language in [
+        "GCC",
+        "Clang",
+        "OpenJDK",
+        "NET",
+        "Mono",
+        "CPython",
+        "PyPy",
+        "Rust",
+    ]:
         for optimized in [False, True]:
             print(f"Attempting to verify {language} (optimized = {optimized})")
             contents = get_contents(language, optimized, path)
