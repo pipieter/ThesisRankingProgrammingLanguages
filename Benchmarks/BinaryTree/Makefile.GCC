@@ -2,8 +2,8 @@
 
 compile:
 	mkdir -p ./out/gcc
-	g++ C++/unoptimized.cpp -o ./out/gcc/unoptimized -O3
-	g++ C++/optimized.cpp   -o ./out/gcc/optimized   -O3
+	g++ C++/unoptimized.cpp -o ./out/gcc/unoptimized ${CPPFLAGS}
+	g++ C++/optimized.cpp   -o ./out/gcc/optimized   ${CPPFLAGS}
 
 command:
 ifndef ARGS

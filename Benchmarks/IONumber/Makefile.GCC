@@ -2,7 +2,7 @@
 
 compile:
 	mkdir -p ./out/gcc
-	g++ C++/ionumber.cpp -o ./out/gcc/ionumber -O3
+	g++ C++/ionumber.cpp -o ./out/gcc/ionumber ${CPPFLAGS}
 
 command:
 ifndef ARGS
