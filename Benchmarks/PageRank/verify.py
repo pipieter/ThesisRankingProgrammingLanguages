@@ -2,6 +2,10 @@ import argparse
 import os
 import os.path
 import subprocess
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from benchmark import get_command
 
 """
 Verifies the correctness of the MergeSort algorithm. Python is used as a baseline to verify results.
@@ -10,27 +14,18 @@ Verifies the correctness of the MergeSort algorithm. Python is used as a baselin
 
 def get_contents(language: str, optimized: bool, path: str) -> dict[int, float]:
     out = os.path.abspath("./out.temp")
-    cwd = os.path.abspath(f"./{language}")
+    cwd = os.path.abspath(f".")
 
     if os.path.isfile(out):
         os.remove(out)
 
-    if optimized:
-        makefile = cwd + "/Makefile.optimized"
-    else:
-        makefile = cwd + "/Makefile.unoptimized"
-
     args = os.environ
     args["ARGS"] = f"{path} {out} 2048"
 
-    # Get command
-    command = subprocess.check_output(
-        ["make", "-f", makefile, "command"],
-        shell=False,
-        cwd=cwd,
-        env=os.environ,
-    ).decode("utf-8")
-    command = command.strip().split(" ")
+    command = get_command(language, optimized, cwd, args)
+
+    if command is None:
+        return None
 
     # Execute command
     subprocess.run(
@@ -69,12 +64,15 @@ if __name__ == "__main__":
 
     # Use Python as baseline
     print("Reading baseline")
-    baseline = get_contents("Python", False, path)
+    baseline = get_contents("CPython", False, path)
 
-    for language in ["C#", "C++", "Java", "PyPy", "Python", "Rust"]:
+    for language in ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]:
         for optimized in [False, True]:
             print(f"Attempting to verify {language} (optimized = {optimized})")
             contents = get_contents(language, optimized, path)
+
+            if contents is None:
+                continue
 
             if baseline.keys() != contents.keys():
                 print(

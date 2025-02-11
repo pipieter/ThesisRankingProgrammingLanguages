@@ -20,7 +20,7 @@ ARGS_MAP = {
 
 
 if __name__ == "__main__":
-    LANGUAGES = ["C++", "C#", "Java", "Mono", "PyPy", "Python", "Rust"]
+    LANGUAGES = ["GCC", "OpenJDK", "NET", "Mono", "CPython", "PyPy", "Rust"]
 
     BENCHMARKS = sorted(list(set(ARGS_MAP.keys())))
 
@@ -67,7 +67,13 @@ if __name__ == "__main__":
         "--timeout",
         type=int,
         default=1000,
-        help="The amount of iterations to perform, after warm-up.",
+        help="The maximum amount of allowed execution time.",
+    )
+    parser.add_argument(
+        "--timebetween",
+        type=int,
+        default=5,
+        help="The amount of time between iterations.",
     )
     parser.add_argument(
         "--verbose",
@@ -83,6 +89,7 @@ if __name__ == "__main__":
     verbose = args.verbose
     iterations = args.iterations
     warmups = args.warmups
+    time_between = args.timebetween
 
     verify_dir(os.path.join("./Results"))
 
@@ -106,4 +113,5 @@ if __name__ == "__main__":
                         iterations=iterations,
                         verbose=verbose,
                         warmups=warmups,
+                        time_between=time_between,
                     )

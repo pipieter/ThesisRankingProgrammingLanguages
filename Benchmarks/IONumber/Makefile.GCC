@@ -1,0 +1,11 @@
+-include ../Makefile.defaults
+
+compile:
+	mkdir -p ./out/gcc
+	g++ C++/ionumber.cpp -o ./out/gcc/ionumber -O3
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/gcc/ionumber $(ARGS)

@@ -36,14 +36,6 @@ RUN wget --no-verbose https://github.com/adoptium/temurin21-binaries/releases/do
     && tar -C /usr/local --strip-components=1 -xzf OpenJDK21U-jdk_x64_linux_hotspot_$(echo $JAVA_VERSION | sed s/+/_/).tar.gz \
     && rm OpenJDK21U-jdk_x64_linux_hotspot_$(echo $JAVA_VERSION | sed s/+/_/).tar.gz
 
-# Temurin JDK
-ARG TEMURIN_VERISON=21
-RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
-RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
-RUN apt update
-RUN apt install temurin-${TEMURIN_VERISON}-jdk -y
-
-
 # C#.
 # https://dotnet.microsoft.com/en-us/download/dotnet
 ARG DOTNET_VERSION=8.0.401 # 8.0.8.

@@ -1,4 +1,3 @@
-import json
 import os
 import random
 import subprocess
@@ -14,7 +13,19 @@ def clear_caches(level: int = 3):
     os.system(f'sh -c "sync; echo {level} > /proc/sys/vm/drop_caches"')
 
 
-def get_command(cwd: str, makefile: str, args: dict):
+def get_command(cwd: str, language: str, args: dict, optimized: bool):
+    makefile = f"Makefile.{language}"
+    if optimized:
+        command = subprocess.run(
+            ["make", "-f", makefile, "command-optimized"],
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            env=args,
+        )
+        if command.returncode == 0:
+            return command.stdout.decode("utf-8").strip().split(" ")
+
     command = subprocess.check_output(
         ["make", "-f", makefile, "command"],
         cwd=cwd,
@@ -28,13 +39,13 @@ def run_rapl_benchmark(
     benchmark: str,
     language: str,
     identifier: str,
-    optimizedStr: str,
-    makefile: str,
+    optimized: str,
     cwd: str,
     args: dict,
     timeout: int,
     iterations: int,
     warmups: int,
+    time_between: int,
     stdin: int,
     stdout: int,
     stderr: int,
@@ -44,7 +55,8 @@ def run_rapl_benchmark(
     # SIGPLAN Not. 44, 3 (March 2009), 265–276. https://doi.org/10.1145/1508284.1508275
     args["RANDOMIZED_ENVIRONMENT_OFFSET"] = "".join(["X"] * random.randint(0, 4096))
 
-    command = get_command(cwd, makefile, args)
+    optimizedStr = "optimized" if optimized else "unoptimized"
+    command = get_command(cwd, language, args, optimized)
 
     path = os.path.join(
         ROOT,
@@ -62,7 +74,7 @@ def run_rapl_benchmark(
         # Run warmups
         if warmups > 0:
             for _ in range(warmups):
-                subprocess.run(
+                result = subprocess.run(
                     command,
                     stdin=stdin,
                     stdout=stdout,
@@ -71,9 +83,14 @@ def run_rapl_benchmark(
                     timeout=timeout,
                     env=args,
                 )
+                if result.returncode != 0:
+                    print(f"Error running '{' '.join(command)}'")
+                    print(result.stdout.decode("utf-8"))
+                    print(result.stderr.decode("utf-8"))
+                    exit(1)
 
         # Run energy measurement
-        subprocess.run(
+        result = subprocess.run(
             rapl_command,
             stdin=stdin,
             stdout=stdout,
@@ -82,9 +99,15 @@ def run_rapl_benchmark(
             timeout=timeout,
             env=args,
         )
-
+        if result.returncode != 0:
+            print(f"Error running '{' '.join(rapl_command)}'")
+            if result.stdout is not None:
+                print(result.stdout.decode("utf-8"))
+            if result.stderr is not None:
+                print(result.stderr.decode("utf-8"))
+            exit(1)
         # Sleep between iterations
-        time.sleep(5)
+        time.sleep(time_between)
 
 
 def run_benchmark(
@@ -96,13 +119,14 @@ def run_benchmark(
     timeout: str,
     iterations: int,
     warmups: int,
+    time_between: int,
     verbose: bool = False,
 ) -> None:
     # Copy PATH and HOME variables, this has to be done manually
     args["PATH"] = os.environ["PATH"]
     args["HOME"] = os.environ["HOME"]
 
-    cwd = os.path.join(ROOT, "Benchmarks", benchmark, language)
+    cwd = os.path.join(ROOT, "Benchmarks", benchmark)
 
     stdin = subprocess.DEVNULL
     stdout = subprocess.DEVNULL
@@ -111,24 +135,17 @@ def run_benchmark(
         stdout = subprocess.PIPE
         stderr = subprocess.STDOUT
 
-    if optimized:
-        optimizedStr = "optimized"
-        makefile = "Makefile.optimized"
-    else:
-        optimizedStr = "unoptimized"
-        makefile = "Makefile.unoptimized"
-
     run_rapl_benchmark(
         benchmark=benchmark,
         language=language,
         identifier=identifier,
-        optimizedStr=optimizedStr,
-        makefile=makefile,
+        optimized=optimized,
         cwd=cwd,
         args=args,
         timeout=timeout,
         iterations=iterations,
         warmups=warmups,
+        time_between=time_between,
         stdin=stdin,
         stdout=stdout,
         stderr=stderr,

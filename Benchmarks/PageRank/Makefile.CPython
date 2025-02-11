@@ -1,0 +1,10 @@
+-include ../Makefile.defaults
+
+compile:
+	@:
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo python3 Python/pagerank.py $(ARGS)

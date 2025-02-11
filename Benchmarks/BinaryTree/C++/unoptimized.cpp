@@ -47,7 +47,7 @@ void count_at_depths(const TreeNode *tree, int depth, vector<int> &target) {
 
 int main(int argc, const char **argv) {
   int nodes = std::atoi(argv[1]);
-  int depth = (int)ceil(log2((double)nodes));
+  int depth = (int)ceil(log2((double)nodes)) + 1;
 
   TreeNode *tree = build_tree(nodes);
   vector<int> counts(depth);

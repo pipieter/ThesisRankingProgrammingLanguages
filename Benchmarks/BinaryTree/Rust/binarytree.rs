@@ -35,7 +35,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     let nodes = args.get(1).unwrap().parse::<i32>().unwrap();
-    let depth = (nodes as f32).log2().ceil() as i32;
+    let depth = (nodes as f32).log2().ceil() as i32 + 1;
 
     let node = build(nodes);
     let mut counts = vec![0i32; depth as usize];

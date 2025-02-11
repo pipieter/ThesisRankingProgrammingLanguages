@@ -1,0 +1,10 @@
+-include ../Makefile.defaults
+
+compile:
+	javac -d out/openjdk/unoptimized Java/BinaryTree.java Java/Node.java
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo java -classpath ./out/openjdk/unoptimized BinaryTree $(ARGS)

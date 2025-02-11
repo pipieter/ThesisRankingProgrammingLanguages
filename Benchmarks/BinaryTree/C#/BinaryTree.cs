@@ -41,7 +41,7 @@ public static class BinaryTree
     public static void Main(string[] args)
     {
         int nodes = int.Parse(args[0]);
-        int depth = (int)System.Math.Ceiling(System.Math.Log((double)nodes) / System.Math.Log(2.0));
+        int depth = (int)System.Math.Ceiling(System.Math.Log((double)nodes) / System.Math.Log(2.0)) + 1;
 
         Node node = Build(nodes);
         int[] counts = new int[depth];

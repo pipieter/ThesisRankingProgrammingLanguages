@@ -31,8 +31,7 @@ def count(tree, depth, target):
 
 if __name__ == "__main__":
     nodes = int(sys.argv[1])
-    depth = int(ceil(log2(nodes)))
-
+    depth = int(ceil(log2(nodes))) + 1
     tree = build(nodes)
     counts = [0 for _ in range(depth)]
 
