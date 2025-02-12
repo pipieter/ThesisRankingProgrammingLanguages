@@ -36,7 +36,7 @@ def get_measure_pagerank_args() -> list[tuple[str, str]]:
 def get_measure_io_number_args() -> list[tuple[str, str]]:
     args = []
 
-    for num in [1_000, 10_000, 100_000, 1_000_000]:
+    for num in [2**14, 2**15, 2**16, 2**17]:
         args.append((str(num), f"{num} {OUT}"))
 
     return args
