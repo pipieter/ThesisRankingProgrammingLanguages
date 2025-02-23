@@ -1,0 +1,10 @@
+-include ../Makefile.defaults
+
+compile:
+	cargo build ${RUSTFLAGS} --target-dir out/rust --manifest-path Rust/Cargo.toml
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/rust/release/matrixmult $(ARGS)

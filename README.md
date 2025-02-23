@@ -77,5 +77,6 @@ The current RAPL utility tool is based on the one created by [Nicolas van Kempen
 | ------------ | --- | --- | ---- | ------ | ---- |
 | Binary trees | -   | O   | -    | -      | -    |
 | IONumber     | -   | -   | -    | -      | -    |
-| MergeSort    | -   | O   | -    | -      | -    |
-| PageRank     | -   | O   | -    | -      | -    |
+| MatrixMult   | -   | O   | -    | -      | -    |
+| MergeSort    | O   | O   | O    | -      | O    |
+| PageRank     | O   | O   | O    | O      | -    |

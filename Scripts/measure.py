@@ -6,6 +6,7 @@ from Scripts.util.benchmark_args import (
     get_measure_io_number_args,
     get_measure_merge_sort_args,
     get_measure_pagerank_args,
+    get_measure_matmul_args
 )
 from Scripts.util.run import run_benchmark
 from Scripts.generate_input import verify_dir
@@ -13,6 +14,7 @@ from Scripts.generate_input import verify_dir
 
 ARGS_MAP = {
     "MergeSort": get_measure_merge_sort_args,
+    "MatrixMult": get_measure_matmul_args,
     "IONumber": get_measure_io_number_args,
     "PageRank": get_measure_pagerank_args,
     "BinaryTree": get_measure_binarytree_args,

@@ -44,6 +44,7 @@ if __name__ == "__main__":
     benchmarks = [
         "BinaryTree",
         "PageRank",
+        "MatrixMult",
         "MergeSort",
         "IONumber",
     ]

@@ -1,0 +1,18 @@
+-include ../Makefile.defaults
+
+compile:
+	mkdir -p ./out/clang
+	clang++ C++/unoptimized.cpp -o ./out/clang/unoptimized ${CPPFLAGS}
+	clang++ C++/optimized.cpp -o ./out/clang/optimized ${CPPFLAGS} -march=native
+
+command:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/clang/unoptimized $(ARGS)
+
+command-optimized:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/clang/optimized $(ARGS)
