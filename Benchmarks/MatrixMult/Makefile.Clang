@@ -3,7 +3,7 @@
 compile:
 	mkdir -p ./out/clang
 	clang++ C++/unoptimized.cpp -o ./out/clang/unoptimized ${CPPFLAGS}
-	clang++ C++/optimized.cpp -o ./out/clang/optimized ${CPPFLAGS} -march=native
+	clang++ C++/optimized.cpp -o ./out/clang/optimized ${CPPFLAGS} -march=native -lopenblas
 
 command:
 ifndef ARGS
