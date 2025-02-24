@@ -25,7 +25,7 @@ ENV CC=gcc
 ENV CXX=g++
 
 # C/C++ libraries.
-RUN apt install -y libapr1-dev libgmp-dev libpcre3-dev libboost-regex-dev libc6-dev
+RUN apt install -y libapr1-dev libgmp-dev libpcre3-dev libboost-regex-dev libc6-dev libopenblas-dev
 
 # OpenJDK Java
 ARG JAVA_VERSION=21.0.4+7

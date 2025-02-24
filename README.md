@@ -8,6 +8,16 @@ git clone --recursive
 
 This will include the RAPL tool repository.
 
+# Requirements
+
+The matrix multiplication algorithm makes use of OpenBLAS for matrix multiplication, which can be installed using 
+
+```bash
+sudo apt-get install libopenblas-dev
+```
+
+This is not needed if the docker container is used.
+
 # Building
 
 All command blocks are assumed they are first executed in the root directory.
