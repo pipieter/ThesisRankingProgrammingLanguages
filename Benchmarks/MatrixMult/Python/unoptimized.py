@@ -20,12 +20,13 @@ def read(path: str) -> Matrix:
     matrix = Matrix(n)
 
     index = 0
-    line = file.readline()
-    while line != "":
+    while True:
+        line = file.readline()
+        if len(line) == 0:
+            break
         row = index // n
         col = index % n
         matrix.values[row][col] = float(line)
-        line = file.readline()
         index += 1
 
     file.close()
