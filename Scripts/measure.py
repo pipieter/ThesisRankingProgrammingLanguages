@@ -63,12 +63,12 @@ if __name__ == "__main__":
         "--iterations",
         type=int,
         default=1,
-        help="The amount of iterations to perform, after warm-up.",
+        help="The amount of iterations to perform.",
     )
     parser.add_argument(
         "--timeout",
         type=int,
-        default=1000,
+        default=600, # 10 minutes
         help="The maximum amount of allowed execution time.",
     )
     parser.add_argument(
@@ -89,6 +89,7 @@ if __name__ == "__main__":
     benchmarks = sorted(list(set(args.benchmarks)))
     optimizations = sorted(list(set(args.optimized)))
     verbose = args.verbose
+    timeout = args.timeout
     iterations = args.iterations
     warmups = args.warmups
     time_between = args.timebetween
@@ -111,7 +112,7 @@ if __name__ == "__main__":
                         identifier=identifier,
                         optimized=optimized,
                         args=args,
-                        timeout=1000,
+                        timeout=timeout,
                         iterations=iterations,
                         verbose=verbose,
                         warmups=warmups,
