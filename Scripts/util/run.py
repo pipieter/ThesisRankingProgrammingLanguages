@@ -25,6 +25,8 @@ def get_command(cwd: str, language: str, args: dict, optimized: bool):
         )
         if command.returncode == 0:
             return command.stdout.decode("utf-8").strip().split(" ")
+        else:
+            return None
 
     command = subprocess.check_output(
         ["make", "-f", makefile, "command"],
@@ -57,6 +59,9 @@ def run_rapl_benchmark(
 
     optimizedStr = "optimized" if optimized else "unoptimized"
     command = get_command(cwd, language, args, optimized)
+
+    if command is None:
+        return
 
     path = os.path.join(
         ROOT,
