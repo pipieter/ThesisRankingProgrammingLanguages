@@ -7,4 +7,10 @@ command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./out/rust/release/matrixmult $(ARGS)
+	@echo ./out/rust/release/unoptimized $(ARGS)
+
+command-optimized:
+ifndef ARGS
+	$(error No ARGS defined.)
+endif
+	@echo ./out/rust/release/optimized $(ARGS)
