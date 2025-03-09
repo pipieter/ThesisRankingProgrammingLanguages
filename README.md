@@ -30,7 +30,7 @@ Input files can be generated using
 sudo python3 -m Scripts.generate_input --verbose
 ```
 
-This will generate random string files for MergeSort. Graph files are currently generated using an external tool.
+This will generate random string files for MergeSort and matrices for MatrixMult. Graph files are currently generated using an [external graph generator](https://github.com/pipieter/graph-generator).
 
 ## Building RAPL
 
@@ -80,13 +80,3 @@ sudo docker cp [CONTAINER_ID]:/root/ranking-languages/Results/. Results/.
 # RAPL
 
 The current RAPL utility tool is based on the one created by [Nicolas van Kempen et al](https://github.com/nicovank/Energy-Languages), and can be found here: https://github.com/pipieter/Thesis-RAPL.
-
-# To do
-
-| Benchmark    | C#  | C++ | Java | Python | Rust |
-| ------------ | --- | --- | ---- | ------ | ---- |
-| Binary trees | -   | O   | -    | -      | -    |
-| IONumber     | -   | -   | -    | -      | -    |
-| MatrixMult   | -   | O   | -    | O      | O    |
-| MergeSort    | O   | O   | O    | -      | O    |
-| PageRank     | O   | O   | O    | O      | -    |
