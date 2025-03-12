@@ -91,9 +91,11 @@ def run_rapl_benchmark(
                     )
                     if result.returncode != 0:
                         print(f"Error running '{' '.join(command)}'")
-                        print(result.stdout.decode("utf-8"))
-                        print(result.stderr.decode("utf-8"))
-                        exit(1)
+                        if result.stdout is not None:
+                            print(result.stdout.decode("utf-8"))
+                        if result.stderr is not None:
+                            print(result.stderr.decode("utf-8"))
+                        return
 
             # Run energy measurement
             result = subprocess.run(
@@ -111,7 +113,7 @@ def run_rapl_benchmark(
                     print(result.stdout.decode("utf-8"))
                 if result.stderr is not None:
                     print(result.stderr.decode("utf-8"))
-                exit(1)
+                return
             # Sleep between iterations
             time.sleep(time_between)
     except subprocess.TimeoutExpired:
