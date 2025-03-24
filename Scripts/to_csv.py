@@ -121,9 +121,10 @@ class Data:
         for sample in samples:
             for subsample in sample["energy"]:
                 energy += (
+                    # pp0 and pp1 are already included in pkg
                     subsample["pkg"]
-                    + subsample["pp0"]
-                    + subsample["pp1"]
+                    # + subsample["pp0"]
+                    # + subsample["pp1"]
                     + subsample["dram"]
                 )
         return energy
