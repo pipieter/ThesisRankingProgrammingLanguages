@@ -37,14 +37,9 @@ RUN wget --no-verbose https://github.com/adoptium/temurin21-binaries/releases/do
     && rm OpenJDK21U-jdk_x64_linux_hotspot_$(echo $JAVA_VERSION | sed s/+/_/).tar.gz
 
 # C#.
-# https://dotnet.microsoft.com/en-us/download/dotnet
-ARG DOTNET_VERSION=8.0.401 # 8.0.8.
-ARG DOTNET_URL=https://download.visualstudio.microsoft.com/download/pr/db901b0a-3144-4d07-b8ab-6e7a43e7a791/4d9d1b39b879ad969c6c0ceb6d052381/dotnet-sdk-8.0.401-linux-x64.tar.gz
-ARG DOTNET_CHECKSUM=4d2180e82c963318863476cf61c035bd3d82165e7b70751ba231225b5575df24d30c0789d5748c3a379e1e6896b57e59286218cacd440ffb0075c9355094fd8c
-RUN wget --no-verbose ${DOTNET_URL} \
-    && echo "${DOTNET_CHECKSUM} dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz" | sha512sum --check \
-    && tar -C /usr/local/bin -xzf dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz \
-    && rm dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz
+# https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu-install?tabs=dotnet9&pivots=os-linux-ubuntu-2410
+ARG DOTNET_VERSION=8.0
+RUN apt install  -y dotnet-sdk-${DOTNET_VERSION}
 
 # Mono
 RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
