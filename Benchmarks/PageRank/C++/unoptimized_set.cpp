@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -6,6 +5,10 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+
+// This implementation is identical to PageRank/C++/unoptimized.cpp, except it uses
+// std::unordered_set to store the incoming and outgoing nodes. This version performed
+// up to three times worse compared to the std::vector version
 
 using namespace std;
 
@@ -24,8 +27,8 @@ vector<string> splitString(const string &str, char delimiter) {
 class Graph {
 public:
   int vertices;
-  vector<vector<int>> incoming;
-  vector<vector<int>> outgoing;
+  vector<unordered_set<int>> incoming;
+  vector<unordered_set<int>> outgoing;
 
 public:
   Graph(const string &path) {
@@ -38,26 +41,17 @@ public:
         int nvertices = atoi(values[2].c_str());
 
         this->vertices = nvertices;
-        this->incoming = vector<vector<int>>(nvertices);
-        this->outgoing = vector<vector<int>>(nvertices);
+        this->incoming = vector<unordered_set<int>>(nvertices);
+        this->outgoing = vector<unordered_set<int>>(nvertices);
       } else if (line[0] == 'a' || line[0] == 'e') {
         vector<string> values = splitString(line, ' ');
 
         int v0 = atoi(values[1].c_str());
         int v1 = atoi(values[2].c_str());
 
-        outgoing[v0].push_back(v1);
-        incoming[v1].push_back(v0);
+        outgoing[v0].insert(v1);
+        incoming[v1].insert(v0);
       }
-    }
-
-    // Remove duplicates
-    for (int v = 0; v < vertices; v++) {
-      unordered_set<int> outgoing_unique(outgoing[v].begin(), outgoing[v].end());
-      unordered_set<int> incoming_unique(incoming[v].begin(), incoming[v].end());
-
-      outgoing[v].assign(outgoing_unique.begin(), outgoing_unique.end());
-      incoming[v].assign(incoming_unique.begin(), incoming_unique.end());
     }
 
     file.close();
