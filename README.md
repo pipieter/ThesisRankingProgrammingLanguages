@@ -47,12 +47,10 @@ cd ../..
 
 ## Building Docker
 
-The Docker can be build using teh following command:
+The Docker can be build using the following command:
 
 ```bash
-cd Docker
-sudo docker build -f Dockerfile --tag thesis ..
-cd ..
+sudo docker build -f Docker/Dockerfile --tag thesis .
 ```
 
 # Running
