@@ -71,10 +71,13 @@ RUN apt install python3-pip -y
 # PyPy.
 RUN add-apt-repository ppa:pypy/ppa
 RUN apt update
-RUN apt install pypy3 -y
+RUN apt install pypy3 pypy3-dev -y
 
-# Script installs
-RUN pip3 install rich --break-system-packages
+# Python libraries
+ARG NUMPY_VERSION=2.2.4
+RUN apt install python3-rich -y
+RUN python3 -m pip install numpy==${NUMPY_VERSION} --break-system-packages
+RUN pypy3 -m pip install numpy==${NUMPY_VERSION} --break-system-packages
 
 # Nano for debugging
 RUN apt install nano
