@@ -69,18 +69,18 @@ class Data:
 
         # Parse energy values
         for datum in data:
+            energy_total = 0
+            energy_cores = 0
+            duration_s = 0
+ 
             for sample in datum["energy_samples"]:
-                energy_total = 0
-                energy_cores = 0
-
+                duration_s += sample["duration_ms"] / 1000
                 for subsample in sample["energy"]:
                     energy_total += subsample["pkg"] + subsample["dram"]
                     energy_cores += subsample["pp0"]
-                
-                duration_s = sample["duration_ms"] / 1000
-                avg_power_total_values.append(energy_total / duration_s)
-                avg_power_cores_values.append(energy_cores / duration_s)
 
+            avg_power_total_values.append(energy_total / duration_s)
+            avg_power_cores_values.append(energy_cores / duration_s)
 
         # Parse process data
         for datum in data:
