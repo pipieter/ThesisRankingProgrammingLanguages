@@ -12,7 +12,8 @@ ROOT = os.getcwd()
 class Data:
     runtime_ms: float
 
-    energy: float
+    avg_power_total: float
+    avg_power_cores: float
     avg_shared_memory: float
     avg_private_memory: float
     avg_swapped_memory: float
@@ -26,7 +27,8 @@ class Data:
 
     def __init__(self, path: str):
         runtime_values = []
-        energy_values = []
+        avg_power_total_values = []
+        avg_power_cores_values = []
         avg_shared_memory_values = []
         avg_private_memory_values = []
         avg_swapped_memory_values = []
@@ -67,7 +69,18 @@ class Data:
 
         # Parse energy values
         for datum in data:
-            energy_values.append(self._parse_energy_samples(datum["energy_samples"]))
+            for sample in datum["energy_samples"]:
+                energy_total = 0
+                energy_cores = 0
+
+                for subsample in sample["energy"]:
+                    energy_total += subsample["pkg"] + subsample["dram"]
+                    energy_cores += subsample["pp0"]
+                
+                duration_s = sample["duration_ms"] / 1000
+                avg_power_total_values.append(energy_total / duration_s)
+                avg_power_cores_values.append(energy_cores / duration_s)
+
 
         # Parse process data
         for datum in data:
@@ -85,7 +98,9 @@ class Data:
             cpu_count_values.append(cpu_count_value)
             avg_cpu_values.append(avg_cpu_value)
 
-            hw_instructions_values.append(datum["counters"]["PERF_COUNT_HW_INSTRUCTIONS"])
+            hw_instructions_values.append(
+                datum["counters"]["PERF_COUNT_HW_INSTRUCTIONS"]
+            )
             hw_cpu_cycles_values.append(datum["counters"]["PERF_COUNT_HW_CPU_CYCLES"])
             hw_cache_miss_rates_values.append(
                 datum["counters"]["PERF_COUNT_HW_CACHE_MISSES"]
@@ -98,13 +113,14 @@ class Data:
 
         # Average results
         self.runtime_ms = self._average(runtime_values)
-        self.energy = self._average(energy_values)
+        self.avg_power_total = self._average(avg_power_total_values)
+        self.avg_power_cores = self._average(avg_power_cores_values)
         self.avg_shared_memory = self._average(avg_shared_memory_values)
         self.avg_private_memory = self._average(avg_private_memory_values)
         self.avg_swapped_memory = self._average(avg_swapped_memory_values)
         self.avg_cpu = self._average(avg_cpu_values)
         self.cpu_count = self._average(cpu_count_values)
-        
+
         self.hw_instructions = int(self._average(hw_instructions_values))
         self.hw_cpu_cycles = int(self._average(hw_cpu_cycles_values))
         self.hw_cache_miss_rate = self._average(hw_cache_miss_rates_values)
@@ -210,7 +226,8 @@ class BenchmarkData:
             self.identifier,
             self.language,
             f"{runtime_s:.4f}",
-            f"{self.data.energy:.4f}",
+            f"{self.data.avg_power_total:.4f}",
+            f"{self.data.avg_power_cores:.4f}",
             f"{avg_cpu_normalized:.4f}",
             f"{avg_total_memory:.4f}",
             f"{self.data.avg_shared_memory:.4f}",
@@ -219,7 +236,7 @@ class BenchmarkData:
             f"{self.data.hw_cpu_cycles}",
             f"{self.data.hw_instructions}",
             f"{self.data.hw_cache_miss_rate}",
-            f"{self.data.hw_branch_miss_rate}"
+            f"{self.data.hw_branch_miss_rate}",
         ]
         return separator.join(values)
 
@@ -231,7 +248,8 @@ class BenchmarkData:
             "Identifier",
             "Language",
             "Runtime (s)",
-            "Energy (Ws)",
+            "Average power total (W)",
+            "Average power cores (W)",
             "Average CPU utilization (%)",
             "Average total memory (KB)",
             "Average shared memory (KB)",
@@ -240,7 +258,7 @@ class BenchmarkData:
             "CPU cycles",
             "Instruction count",
             "Cache miss rate",
-            "Branch miss rate"
+            "Branch miss rate",
         ]
         return separator.join(headers)
 
