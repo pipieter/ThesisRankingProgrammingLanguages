@@ -1,12 +1,9 @@
 import argparse
 import json
-import os
+import os.path
 import statistics
 
 from Scripts.util.util import get_files
-
-
-ROOT = os.getcwd()
 
 
 class Data:
@@ -72,7 +69,7 @@ class Data:
             energy_total = 0
             energy_cores = 0
             duration_s = 0
- 
+
             for sample in datum["energy_samples"]:
                 duration_s += sample["duration_ms"] / 1000
                 for subsample in sample["energy"]:
@@ -174,6 +171,7 @@ class BenchmarkData:
 
     def __init__(
         self,
+        path: str,
         benchmark: str,
         optimized: str,
         language: str,
@@ -183,9 +181,6 @@ class BenchmarkData:
         self.optimized = optimized
         self.language = language
         self.identifier = identifier
-
-        file = f"{benchmark}.{optimized}.{language}.{identifier}.json"
-        path = os.path.join(ROOT, "Results", file)
 
         self.data = Data(path)
 
@@ -264,15 +259,20 @@ class BenchmarkData:
 
 
 if __name__ == "__main__":
-    path = os.path.join(ROOT, "Results")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--path", type=str, default="./Results")
+
+    args = parser.parse_args()
+    path = args.path
 
     files = get_files(path)
     files = [file for file in files if file.endswith(".json")]
 
     data = []
     for file in files:
+        filepath = os.path.join(path, file)
         benchmark, optimized, language, identifier, _ = file.split(".")
-        data.append(BenchmarkData(benchmark, optimized, language, identifier))
+        data.append(BenchmarkData(filepath, benchmark, optimized, language, identifier))
     data = sorted(data)
 
     print(BenchmarkData.csv_header())
