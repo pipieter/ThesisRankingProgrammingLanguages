@@ -3,7 +3,7 @@
 This repository can be pulled with:
 
 ```bash
-git clone --recursive
+git clone --recursive https://github.com/pipieter/ThesisRankingProgrammingLanguages.git
 ```
 
 This will include the RAPL tool repository.
@@ -69,11 +69,21 @@ python3 -m Scripts.measure      # Measure the benchmarks
 python3 -m Scripts.to_csv       # Summarize the benchmarks
 ```
 
-To copy the results to somewhere:
+The measure and compile scripts can also take in additional arguments several arguments for more fine-grained control. See the `--help` argument for more information.
+
+To copy the results to the host system, run the following command with an active container:
 
 ```bash
-sudo docker cp [CONTAINER_ID]:/root/ranking-languages/Results/. Results/.
+sudo docker cp [CONTAINER_ID]:/root/thesis/Results/. Results/.
 ```
+
+The `to_csv` script automatically analyzes all the JSON in the Results directory. To specify a different path, use
+
+```bash
+python3 -m Scripts.to_csv --path [directory]
+```
+
+Note that the `to_csv` script will not search for JSON files recursively.
 
 # RAPL
 
