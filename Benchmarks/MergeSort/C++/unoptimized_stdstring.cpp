@@ -1,18 +1,19 @@
-#include <cstring>
 #include <fstream>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-vector<const char *> merge(const vector<const char *> &a,
-                           const vector<const char *> &b) {
-  vector<const char *> merged;
+// This is the same implementation as unoptimized.cpp, except std::strings are
+// used instead of c-strings. A slowdown of about x3.454 was noted
+
+vector<string> merge(const vector<string> &a, const vector<string> &b) {
+  vector<string> merged;
   size_t ia = 0;
   size_t ib = 0;
 
   while (ia < a.size() && ib < b.size()) {
-    if (std::strcmp(a[ia], b[ib]) < 0) {
+    if (a[ia] < b[ib]) {
       merged.push_back(a[ia]);
       ia++;
     } else {
@@ -31,17 +32,17 @@ vector<const char *> merge(const vector<const char *> &a,
   return merged;
 }
 
-vector<const char *> merge_sort(const vector<const char *> &entries) {
+vector<string> merge_sort(const vector<string> &entries) {
   if (entries.size() <= 1) {
     return entries;
   }
 
   int half = entries.size() / 2;
-  vector<const char *> left(entries.begin(), entries.begin() + half);
-  vector<const char *> right(entries.begin() + half, entries.end());
+  vector<string> left(entries.begin(), entries.begin() + half);
+  vector<string> right(entries.begin() + half, entries.end());
 
-  vector<const char *> left_sorted = merge_sort(left);
-  vector<const char *> right_sorted = merge_sort(right);
+  vector<string> left_sorted = merge_sort(left);
+  vector<string> right_sorted = merge_sort(right);
 
   return merge(left_sorted, right_sorted);
 }
@@ -51,27 +52,20 @@ int main(int argc, const char **argv) {
   string output = argv[2];
 
   string line;
-  vector<const char *> lines;
+  vector<string> lines;
   ifstream in(input);
   while (getline(in, line)) {
-    char *cstring = new char[line.size() + 1];
-    strcpy(cstring, line.c_str());
-    cstring[line.size()] = '\0';
-    lines.push_back(cstring);
+    lines.push_back(line);
   }
   in.close();
 
-  vector<const char *> sorted = merge_sort(lines);
+  vector<string> sorted = merge_sort(lines);
 
   ofstream out(output);
   for (const auto &str : sorted) {
     out << str << '\n';
   }
   out.close();
-
-  for (auto line : lines) {
-    delete line;
-  }
 
   return 0;
 }
