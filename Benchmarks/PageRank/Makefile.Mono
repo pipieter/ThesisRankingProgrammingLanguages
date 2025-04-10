@@ -2,18 +2,10 @@
 
 compile:
 	mkdir -p ./out/mono
-	mcs ./C#/Unoptimized.cs -out:./out/mono/unoptimized
-	mcs ./C#/Optimized.cs   -out:./out/mono/optimized
+	mcs ./C#/PageRank.cs -out:./out/mono/pagerank
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo mono ./out/mono/unoptimized $(ARGS)
-
-
-command-optimized:
-ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@echo mono ./out/mono/optimized $(ARGS)
+	@echo mono ./out/mono/pagerank $(ARGS)

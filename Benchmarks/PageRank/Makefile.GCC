@@ -2,17 +2,10 @@
 
 compile:
 	mkdir -p ./out/gcc
-	g++ C++/unoptimized.cpp -o ./out/gcc/unoptimized ${CPPFLAGS}
-	g++ C++/optimized.cpp   -o ./out/gcc/optimized   ${CPPFLAGS}
+	g++ C++/pagerank.cpp -o ./out/gcc/pagerank ${CPPFLAGS}
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./out/gcc/unoptimized $(ARGS)
-
-command-optimized:
-ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@echo ./out/gcc/optimized $(ARGS)
+	@echo ./out/gcc/pagerank $(ARGS)

@@ -2,17 +2,10 @@
 
 compile:
 	mkdir -p ./out/clang
-	clang++ C++/unoptimized.cpp -o ./out/clang/unoptimized ${CPPFLAGS}
-	clang++ C++/optimized.cpp   -o ./out/clang/optimized   ${CPPFLAGS}
+	clang++ C++/pagerank.cpp -o ./out/clang/pagerank ${CPPFLAGS}
 
 command:
 ifndef ARGS
 	$(error No ARGS defined.)
 endif
-	@echo ./out/clang/unoptimized $(ARGS)
-
-command-optimized:
-ifndef ARGS
-	$(error No ARGS defined.)
-endif
-	@echo ./out/clang/optimized $(ARGS)
+	@echo ./out/clang/pagerank $(ARGS)
