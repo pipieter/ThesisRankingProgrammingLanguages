@@ -1,14 +1,11 @@
 use std::{
-    collections::HashSet,
-    env,
-    fs::File,
-    io::{BufRead, BufReader, Write},
+    collections::HashSet, env, fs::File, io::{BufRead, BufReader, Write}
 };
 
 struct Graph {
     vertices: usize,
-    incoming: Vec<HashSet<i32>>,
-    outgoing: Vec<HashSet<i32>>,
+    incoming: Vec<Vec<i32>>,
+    outgoing: Vec<Vec<i32>>,
 }
 
 impl Graph {
@@ -16,8 +13,8 @@ impl Graph {
         let reader: BufReader<File> = BufReader::new(File::open(path).unwrap());
 
         let mut vertices: usize = 0;
-        let mut incoming: Vec<HashSet<i32>> = Vec::new();
-        let mut outgoing: Vec<HashSet<i32>> = Vec::new();
+        let mut incoming_sets: Vec<HashSet<i32>> = Vec::new();
+        let mut outgoing_sets: Vec<HashSet<i32>> = Vec::new();
 
         for line in reader.lines() {
             if line.is_err() {
@@ -29,12 +26,12 @@ impl Graph {
                 let values = line.split(' ').collect::<Vec<&str>>();
 
                 vertices = values[2].parse::<usize>()?;
-                incoming = Vec::with_capacity(vertices);
-                outgoing = Vec::with_capacity(vertices);
+                incoming_sets = Vec::with_capacity(vertices);
+                outgoing_sets = Vec::with_capacity(vertices);
 
                 for _ in 0..vertices {
-                    incoming.push(HashSet::new());
-                    outgoing.push(HashSet::new());
+                    incoming_sets.push(HashSet::new());
+                    outgoing_sets.push(HashSet::new());
                 }
             } else if line.starts_with('e') || line.starts_with('a') {
                 let values = line.split(' ').collect::<Vec<&str>>();
@@ -42,10 +39,14 @@ impl Graph {
                 let v0 = values[1].parse::<i32>()?;
                 let v1 = values[2].parse::<i32>()?;
 
-                outgoing.get_mut(v0 as usize).unwrap().insert(v1);
-                incoming.get_mut(v1 as usize).unwrap().insert(v0);
+                outgoing_sets.get_mut(v0 as usize).unwrap().insert(v1);
+                incoming_sets.get_mut(v1 as usize).unwrap().insert(v0);
             }
         }
+
+        // Remove duplicates
+        let incoming:Vec<Vec<i32>> = incoming_sets.into_iter().map(|s| s.into_iter().collect()).collect(); 
+        let outgoing:Vec<Vec<i32>> = outgoing_sets.into_iter().map(|s| s.into_iter().collect()).collect(); 
 
         Ok(Graph {
             vertices,

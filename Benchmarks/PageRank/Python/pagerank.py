@@ -1,10 +1,10 @@
 import sys
-from typing import List, Set
+from typing import List
 
 
 class Graph(object):
-    incoming: List[Set[int]]
-    outgoing: List[Set[int]]
+    incoming: List[List[int]]
+    outgoing: List[List[int]]
 
     vertices: int
 
@@ -12,24 +12,31 @@ class Graph(object):
         file = open(path, "r")
 
         line = file.readline()
+
+        incoming_sets = []
+        outgoing_sets = []
         while line != "":
             if line.startswith("p"):
                 _, _, vertices, _ = line.split(" ")
                 self.vertices = int(vertices)
-                self.incoming = [set() for _ in range(self.vertices)]
-                self.outgoing = [set() for _ in range(self.vertices)]
+                incoming_sets = [set() for _ in range(self.vertices)]
+                outgoing_sets = [set() for _ in range(self.vertices)]
 
             elif line.startswith("a") or line.startswith("e"):
                 elements = line.split(" ")
                 a = int(elements[1])
                 b = int(elements[2])
 
-                self.outgoing[a].add(b)
-                self.incoming[b].add(a)
+                outgoing_sets[a].add(b)
+                incoming_sets[b].add(a)
 
             line = file.readline()
 
         file.close()
+
+        # Remove duplicates
+        self.outgoing = [list(s) for s in outgoing_sets]
+        self.incoming = [list(s) for s in incoming_sets]
 
 
 def PageRank_single(v: int, graph: Graph, ranks: List[float], damping: float):

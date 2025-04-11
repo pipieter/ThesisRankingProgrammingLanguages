@@ -11,10 +11,13 @@ import java.util.HashSet;
 class Graph {
 
     public int nvertices;
-    public ArrayList<HashSet<Integer>> incoming;
-    public ArrayList<HashSet<Integer>> outgoing;
+    public ArrayList<ArrayList<Integer>> incoming;
+    public ArrayList<ArrayList<Integer>> outgoing;
 
     public Graph(String file) throws FileNotFoundException, IOException {
+        ArrayList<HashSet<Integer>> incomingSets = new ArrayList<>();
+        ArrayList<HashSet<Integer>> outgoingSets = new ArrayList<>();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line = reader.readLine();
@@ -25,11 +28,13 @@ class Graph {
                     int vertices = Integer.parseInt(values[2]);
 
                     this.nvertices = vertices;
-                    this.incoming = new ArrayList<>(vertices);
-                    this.outgoing = new ArrayList<>(vertices);
+                    incomingSets.clear();
+                    outgoingSets.clear();
+                    incomingSets.ensureCapacity(vertices);
+                    outgoingSets.ensureCapacity(vertices);
                     for (int i = 0; i < vertices; i++) {
-                        this.incoming.add(new HashSet<>());
-                        this.outgoing.add(new HashSet<>());
+                        incomingSets.add(new HashSet<>());
+                        outgoingSets.add(new HashSet<>());
                     }
                 } else if (line.startsWith("e") || line.startsWith("a")) {
                     String[] values = line.split(" ");
@@ -37,13 +42,22 @@ class Graph {
                     int a = Integer.parseInt(values[1]);
                     int b = Integer.parseInt(values[2]);
 
-                    this.outgoing.get(a).add(b);
-                    this.incoming.get(b).add(a);
+                    outgoingSets.get(a).add(b);
+                    incomingSets.get(b).add(a);
                 }
 
                 line = reader.readLine();
             }
         }
+
+        // Remove duplicates
+        this.incoming = new ArrayList<>(this.nvertices);
+        this.outgoing = new ArrayList<>(this.nvertices);
+        for (int i = 0; i < this.nvertices; i++) {
+            this.outgoing.add(new ArrayList<>(outgoingSets.get(i)));
+            this.incoming.add(new ArrayList<>(incomingSets.get(i)));
+        }
+
     }
 }
 

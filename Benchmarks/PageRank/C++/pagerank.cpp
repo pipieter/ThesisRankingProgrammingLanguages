@@ -32,35 +32,40 @@ public:
     ifstream file(path);
     string line;
 
+    vector<unordered_set<int>> incoming_sets;
+    vector<unordered_set<int>> outgoing_sets;
+
     while (getline(file, line)) {
       if (line[0] == 'p') {
         vector<string> values = splitString(line, ' ');
         int nvertices = atoi(values[2].c_str());
 
         this->vertices = nvertices;
-        this->incoming = vector<vector<int>>(nvertices);
-        this->outgoing = vector<vector<int>>(nvertices);
+        incoming_sets.clear();
+        outgoing_sets.clear();
+        incoming_sets.resize(nvertices);
+        outgoing_sets.resize(nvertices);
       } else if (line[0] == 'a' || line[0] == 'e') {
         vector<string> values = splitString(line, ' ');
 
         int v0 = atoi(values[1].c_str());
         int v1 = atoi(values[2].c_str());
 
-        outgoing[v0].push_back(v1);
-        incoming[v1].push_back(v0);
+        outgoing_sets[v0].insert(v1);
+        incoming_sets[v1].insert(v0);
       }
     }
 
-    // Remove duplicates
-    for (int v = 0; v < vertices; v++) {
-      unordered_set<int> outgoing_unique(outgoing[v].begin(), outgoing[v].end());
-      unordered_set<int> incoming_unique(incoming[v].begin(), incoming[v].end());
+    file.close();
 
-      outgoing[v].assign(outgoing_unique.begin(), outgoing_unique.end());
-      incoming[v].assign(incoming_unique.begin(), incoming_unique.end());
+    // Remove duplicates
+    incoming.resize(vertices);
+    outgoing.resize(vertices);
+    for (int v = 0; v < vertices; v++) {
+      outgoing[v].assign(outgoing_sets[v].begin(), outgoing_sets[v].end());
+      incoming[v].assign(incoming_sets[v].begin(), incoming_sets[v].end());
     }
 
-    file.close();
   }
 };
 
