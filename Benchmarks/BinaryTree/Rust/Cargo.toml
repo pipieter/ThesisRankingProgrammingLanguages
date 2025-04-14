@@ -6,3 +6,10 @@ edition = "2021"
 [[bin]]
 name = "binarytree"
 path = "binarytree.rs"
+
+[[bin]]
+name = "binarytree_arena"
+path = "binarytree_arena.rs"
+
+[dependencies]
+bumpalo = "3.17.0"
