@@ -8,6 +8,10 @@ name = "optimized"
 path = "optimized.rs"
 
 [[bin]]
+name = "optimized_zero"
+path = "optimized_zero.rs"
+
+[[bin]]
 name = "unoptimized"
 path = "unoptimized.rs"
 
