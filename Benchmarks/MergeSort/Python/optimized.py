@@ -1,4 +1,4 @@
-import multiprocessing
+import threading
 import sys
 from typing import List
 
@@ -28,13 +28,12 @@ def merge_sort_parallel(entries: List[str]) -> None:
     left = entries[:half]
     right = entries[half:]
 
-    leftProcess = multiprocessing.Process(target=merge_sort_parallel, args=(left))
-    leftProcess.start()
+    left_thread = threading.Thread(target=merge_sort_parallel, args=(left))
+    left_thread.start()
 
     merge_sort_parallel(right)
 
-    leftProcess.join()
-    leftProcess.close()
+    left_thread.join()
 
     merge(left, right, entries)
 
