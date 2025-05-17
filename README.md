@@ -53,6 +53,17 @@ The Docker can be build using the following command:
 sudo docker build -f Docker/Dockerfile --tag thesis .
 ```
 
+## Building individual benchmarks
+
+Individual benchmarks can be built by using the provided make files. For example, building the matrix multiplication benchmark for GCC can be done using:
+
+```bash
+cd Benchmarks/MatrixMult
+make -f Makefile.GCC
+```
+
+This will build both the baseline version and the optimized version, if available.
+
 # Running
 
 The Docker container can the following command. The `--priviledged` flag is required to drop the caches and to access the MSRs.
@@ -87,4 +98,8 @@ Note that the `to_csv` script will not search for JSON files recursively.
 
 # RAPL
 
-The current RAPL utility tool is based on the one created by [Nicolas van Kempen et al](https://github.com/nicovank/Energy-Languages), and can be found here: https://github.com/pipieter/Thesis-RAPL.
+The current RAPL utility tool is based on the one created by [Nicolas van Kempen et al](https://github.com/nicovank/Energy-Languages), and [can be found here](https://github.com/pipieter/Thesis-RAPL).
+
+# Results
+
+The results will be generated in the `Results` folder by default. The results for the ASUS laptop and Lenovo with 10 iterations are provided in the `Results` folder.
