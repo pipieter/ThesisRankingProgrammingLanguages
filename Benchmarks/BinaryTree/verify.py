@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "nodes",
         type=int,
-        help="The amount of nodes used in the comparison.",
+        help="The number of nodes used in the comparison.",
     )
 
     args = parser.parse_args()

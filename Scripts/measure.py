@@ -57,13 +57,13 @@ if __name__ == "__main__":
         "--warmups",
         type=int,
         default=0,
-        help="The amount of warmup iterations before measuring.",
+        help="The number of warmup iterations before measuring.",
     )
     parser.add_argument(
         "--iterations",
         type=int,
         default=1,
-        help="The amount of iterations to perform.",
+        help="The number of iterations to perform.",
     )
     parser.add_argument(
         "--timeout",
